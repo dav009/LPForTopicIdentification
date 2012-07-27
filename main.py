@@ -1,4 +1,5 @@
-#David Przybilla
+#author: David Przybilla
+#date: July 2012
 #this file is the main of the app
 
 
