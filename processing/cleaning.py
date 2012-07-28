@@ -33,7 +33,7 @@ def removeStopWords(message):
 	newMessage=""
 	words=message.split(" ")
 	
-	forbiddenList=[",",".","!","?","¿"]
+	forbiddenList=[",",".","!","?"]
 	#replaces the word of forbiddenlsit
 	for word in forbiddenList:
 		message=message.replace(word,"");
