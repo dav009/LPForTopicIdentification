@@ -5,6 +5,7 @@
 #4.get frecuency tables.
 #5.generating JUNTO graph format
 import os
+from nltk.corpus import stopwords
 
 #PATH OF TREETRAGGER
 TREE_TAGGER_PATH="/home/attickid/LPproject/LPForTopicIdentification/processing/stemming/treeTagger/cmd/"
@@ -19,7 +20,7 @@ def stemming(message):
 				postagging=line.split("\t")
 				
 				#in case it is Verb we want to get the infinitive representation to make presentation less sparce
-				if(postagging[1] in ["VLfin","VLger","VLinf","VLadj"] and not(postagging[2]=="<unknown>")):
+				if(postagging[1] in ["VLfin","VLger","VLinf","VLadj","VBZ","VB","ADJ","VMadj","VLadj","VLger","VLinf","VCLIinf","VCLIger","VMfin","VSfin","VSger"] and not(postagging[2].strip()=="<unknown>")):
 					newMessage=newMessage+" "+postagging[2].strip()
 			
 				else:
@@ -30,6 +31,17 @@ def stemming(message):
 #given a text returns a version of text where all the stop words are removed (cast the text into lowercase)
 def removeStopWords(message):
 	newMessage=""
+	words=message.split(" ")
+	
+	forbiddenList=[",",".","!","?","¿"]
+	#replaces the word of forbiddenlsit
+	for word in forbiddenList:
+		message=message.replace(word,"");
+	#look for stopwords and ignore them
+	#converts the words to lower case
+	for word in words:
+		if ((not word in stopwords.words('spanish'))):
+			newMessage=newMessage+" "+word.lower()
 	return newMessage
 
 #just for testing

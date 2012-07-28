@@ -9,8 +9,10 @@ class Instance:
 	def cleanMessage(self):
 		#do stemming
 		self.triple['message']=processing.cleaning.stemming(self.triple['message'])
-		#remove stopwords
-		#lowercase
+		
+		#remove stopwords,make words lowercase
+		self.triple['message']=processing.cleaning.removeStopWords(self.triple['message'])
+		
 		return 1
 
 	#retunrs a dictionary with the number of times each term appears in the message
