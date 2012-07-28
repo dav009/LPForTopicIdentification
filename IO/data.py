@@ -1,3 +1,5 @@
+import processing.cleaning
+
 class Instance:
 
 	def __init__(self,triple):
@@ -6,6 +8,7 @@ class Instance:
 	#change the message in the triple,cleaning it
 	def cleanMessage(self):
 		#do stemming
+		self.triple['message']=processing.cleaning.stemming(self.triple['message'])
 		#remove stopwords
 		#lowercase
 		return 1

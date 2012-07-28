@@ -21,6 +21,7 @@ def main():
 	for instance in listOfData:
 		#clean message
 		instance.cleanMessage()
+		print instance.triple['message']
 		
 		
 
