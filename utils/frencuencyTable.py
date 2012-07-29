@@ -1,3 +1,6 @@
+#author: David Przybilla
+#date: July 2012
+#this class is a frequencyTable for counting how many times a word appears in a text
 class frecuencyTable:
 
 	def __init__(self):
