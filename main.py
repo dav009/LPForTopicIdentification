@@ -61,25 +61,23 @@ def main():
 
 	#measure the similarities
 	similarities={}
-	for i in range(0,len(instanceVectors)):
-		for j in range(i+1,len(instanceVectors)):
-			similarities[str(i)+'_'+str(j)]=distance(matrixLSA[i],matrixLSA[j],'euclidean')
-
-	
 	#creates a file with the graph description for JUNTO to use
 	graphFile=open("junto_graph_messages",'w')
 	juntoGraphFileContent=""
-	for key in similarities.keys():
-		messagesIndexes=key.split("_")
-		juntoGraphFileContent=juntoGraphFileContent+messagesIndexes[0]+" "+messagesIndexes[1]+" "+str(similarities[key])+"\n"
-	graphFile.write(juntoGraphFile)
+
+	for i in range(0,len(instanceVectors)):
+		for j in range(i+1,len(instanceVectors)):
+			distanceValue=distance(matrixLSA[i],matrixLSA[j],'euclidean')
+			similarities[str(i)+'_'+str(j)]=distanceValue
+			juntoGraphFileContent=juntoGraphFileContent+str(i)+"\t"+str(j)+"\t"+str(distanceValue)+"\n"
+	graphFile.write(juntoGraphFileContent)
 
 	#creates the gold_labels for Junto( the instnaces whose label is known)
 	goldFileContent=""
-	goldFile=open("junto_graph_gold",'w')
+	goldFile=open("junto_graph_seeds",'w')
 	for instance in listOfData:
-		if ( (not instance.triple['label']=='') and (not instance.triple['label']==null)):
-			goldFileContent=goldFileContent+instance.triple['id']+" "+instance.triple['label']+" "+"1.0\n"
+		if ( (not instance.triple['label']=='') and (not instance.triple['label']==None)):
+			goldFileContent=goldFileContent+str(instance.triple['id'])+"\t"+instance.triple['label']+"\t"+"1.0\n"
 	goldFile.write(goldFileContent)
 
 
