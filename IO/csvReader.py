@@ -39,9 +39,9 @@ def readCSV(path):
 		counter=counter+1
 		
 		if(row[indexLabel1]==''):
-			triple['label']=row[indexLabel2]
+			triple['label']=row[indexLabel2].replace(" ","_")
 		else:
-			triple['label']=row[indexLabel1]
+			triple['label']=row[indexLabel1].replace(" ","_")
 		triple['polarity']=row[indexPolarity]
 
 		listOfTriples.append(triple)

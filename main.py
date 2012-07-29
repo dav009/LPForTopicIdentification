@@ -7,13 +7,22 @@ from IO.data import Instance
 from sets import Set
 import numpy as np
 from processing.LatentSemantic import *
+from math import sqrt
+
+#measures the distance among two vectors
+def distance(v1,v2,similarityMeasure):
+		result=0.0
+		if(similarityMeasure=="euclidean"):
+				for index in range(0,len(v1)):
+						result=result+((v1[index]-v2[index])**2)
+				return sqrt(result)
 
 def main():
 	
 	#Read the file and convert triples into objects
 	
 	#read file with messages
-	listOfTriples=readCSV("/home/attickid/LPproject/LPForTopicIdentification/Data/terra2short.csv")
+	listOfTriples=readCSV("/home/attickid/LPproject/LPForTopicIdentification/Data/terraReduced.csv")
 	
 	listOfData=[]
 	#convert the triples to objects
@@ -52,11 +61,27 @@ def main():
 
 	#measure the similarities
 	similarities={}
-	for i in range(0,len(instanceVectors):
-		for j in range(i+1,len(instanceVectors):
-			similarities[i+'_'+j]=distance(matrixLSA[i],matrixLSA[j],'cosine')
+	for i in range(0,len(instanceVectors)):
+		for j in range(i+1,len(instanceVectors)):
+			similarities[str(i)+'_'+str(j)]=distance(matrixLSA[i],matrixLSA[j],'euclidean')
 
-	#define the graph
+	
+	#creates a file with the graph description for JUNTO to use
+	graphFile=open("junto_graph_messages",'w')
+	juntoGraphFileContent=""
+	for key in similarities.keys():
+		messagesIndexes=key.split("_")
+		juntoGraphFileContent=juntoGraphFileContent+messagesIndexes[0]+" "+messagesIndexes[1]+" "+str(similarities[key])+"\n"
+	graphFile.write(juntoGraphFile)
+
+	#creates the gold_labels for Junto( the instnaces whose label is known)
+	goldFileContent=""
+	goldFile=open("junto_graph_gold",'w')
+	for instance in listOfData:
+		if ( (not instance.triple['label']=='') and (not instance.triple['label']==null)):
+			goldFileContent=goldFileContent+instance.triple['id']+" "+instance.triple['label']+" "+"1.0\n"
+	goldFile.write(goldFileContent)
+
 
 	#call JUNTO
 
