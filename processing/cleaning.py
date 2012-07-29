@@ -38,7 +38,7 @@ def removeStopWords(message):
 	newMessage=""
 	words=message.split(" ")
 	
-	forbiddenList=[",",".","!","?","\n","\t","(",")"]
+	forbiddenList=[",",".","!","?","\n","\t","(",")",","]
 	#replaces the word of forbiddenlsit
 	for word in forbiddenList:
 		message=message.replace(word,"");
@@ -47,6 +47,8 @@ def removeStopWords(message):
 	for word in words:
 		if ((not word in stopwords.words('spanish'))):
 			newMessage=newMessage+" "+word.lower()
+
+	print newMessage
 	return newMessage
 
 #just for testing

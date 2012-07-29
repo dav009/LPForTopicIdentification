@@ -8,6 +8,7 @@ from sets import Set
 import numpy as np
 from processing.LatentSemantic import *
 from math import sqrt
+from math import floor
 
 #measures the distance among two vectors
 def distance(v1,v2,similarityMeasure):
@@ -31,7 +32,15 @@ def main():
 		
 	#stores the vocabulry  of the docs
 	setOfWords=Set()
+	#stores the set of labels found in the instnaces
+	setOfLabels=Set()
 	for instance in listOfData:
+		print "cleaning: "+str(instance.triple['id'])
+
+		#stores the labels
+		if(instance.triple['label']!=None and instance.triple['label']!=''):
+			setOfLabels.add(instance.triple['label'])
+
 		#clean message
 		instance.cleanMessage()
 		instance.measureFrequencies()
@@ -42,10 +51,11 @@ def main():
 			setOfWords.add(v)
 
 	#creates the vector for each instance
+	print "creating vectors for each message"
 	instanceVectors=[]
 	for instance in listOfData:
 		for word in setOfWords:
-			instance.vector.append(instance.getFrecuencyTable().get(word))
+			instance.vector.append(instance.getFrecuencyTable().get(word)*1.0)
 		instanceVectors.append(instance.vector)
 			
 		
@@ -54,15 +64,18 @@ def main():
 
 	#SVD
 	matrix =np.matrix(instanceVectors)
-	matrix=	tfidfTransform(matrix)
+	print "calculating tf-idf"
+	#matrix=	tfidfTransform(matrix)
+	print "calculatin svd"
 	matrixLSA=svdDimensionalityReduction(matrix,1)
 
 	print matrixLSA
 
+	print "calculating the graph files for Junto"
 	#measure the similarities
 	similarities={}
 	#creates a file with the graph description for JUNTO to use
-	graphFile=open("junto_graph_messages",'w')
+	graphFile=open("input_graph",'w')
 	juntoGraphFileContent=""
 
 	for i in range(0,len(instanceVectors)):
@@ -72,13 +85,36 @@ def main():
 			juntoGraphFileContent=juntoGraphFileContent+str(i)+"\t"+str(j)+"\t"+str(distanceValue)+"\n"
 	graphFile.write(juntoGraphFileContent)
 
+	#this defines the number of seeds(annotated data for the algorithm)
+	numberOfSeeds=30
+	currentNumberOfSeeds=0
+	
+	currentNumberOfSeedsPerLabel={}
+	for key in setOfLabels:
+		currentNumberOfSeedsPerLabel[key]=0
+
+	#there should be an equal number of seeds for each label
+	numberOfSeedsPerLabel=math.floor(numberOfSeeds/(1.0*len(setOfLabels)))
+	numberOfSeeds=numberOfSeedsPerLabel*len(setOflabels)
+
 	#creates the gold_labels for Junto( the instnaces whose label is known)
+	#seed files refer to those instances which label is already given
+	seedFileContent=""
+	seedFile=open("seeds",'w')
+	#gold file refers to the goldstandard towards the perfomrance is measureed
 	goldFileContent=""
-	goldFile=open("junto_graph_seeds",'w')
+	goldFile=open("gold_labels",'w')
 	for instance in listOfData:
-		if ( (not instance.triple['label']=='') and (not instance.triple['label']==None)):
-			goldFileContent=goldFileContent+str(instance.triple['id'])+"\t"+instance.triple['label']+"\t"+"1.0\n"
+		if ( (not instance.triple['label']=='') and (not instance.triple['label']==None) ):
+			#if the instance is between the first 1000 then it is  a seed otherwise it is test
+			if(currentNumberOfSeedsPerLabel[instance.triple['label']]<numberOfSeedsPerLabel):
+				seedFileContent=seedFileContent+str(instance.triple['id'])+"\t"+instance.triple['label']+"\t"+"1.0\n"
+			else:
+				goldFileContent=goldFileContent+str(instance.triple['id'])+"\t"+instance.triple['label']+"\t"+"1.0\n"
+	seedFile.write(seedFileContent)
 	goldFile.write(goldFileContent)
+
+	#gold labels
 
 
 	#call JUNTO
