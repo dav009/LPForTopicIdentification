@@ -13,7 +13,12 @@ TREE_TAGGER_PATH="/home/attickid/LPproject/LPForTopicIdentification/processing/s
 #given a message returns a message steamed
 def stemming(message):
 	newMessage=""
-	
+
+	message=message.replace("(",'')
+	message=message.replace(")",'')
+	message=message.replace("\"",'')
+	message=message.replace(":",'')
+
 	os.system('echo '+message+ ' | '+TREE_TAGGER_PATH+'tree-tagger-spanish-utf8 >temp');
 	pos=open("temp",'r')	
 	for line in pos.readlines():
@@ -33,7 +38,7 @@ def removeStopWords(message):
 	newMessage=""
 	words=message.split(" ")
 	
-	forbiddenList=[",",".","!","?"]
+	forbiddenList=[",",".","!","?","\n","\t","(",")"]
 	#replaces the word of forbiddenlsit
 	for word in forbiddenList:
 		message=message.replace(word,"");

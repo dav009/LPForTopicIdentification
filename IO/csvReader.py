@@ -29,11 +29,14 @@ def readCSV(path):
 		if field=="Tono":
 			indexPolarity=currentIndex
 		currentIndex=currentIndex+1
-	
+
+	counter=0
 	for row in dataReader:
 		triple={}
 		#get the data from csv file		
 		triple['message']=row[indexMessage]
+		triple['id']=counter
+		counter=counter+1
 		
 		if(row[indexLabel1]==''):
 			triple['label']=row[indexLabel2]
