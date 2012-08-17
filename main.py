@@ -12,7 +12,7 @@ from math import floor
 from math import cos
 from math import degrees
 
-#measures the distance among two vectors, test gitplugin23
+#measures the distance among two vectors, test gitplugin5
 def distance(v1,v2,similarityMeasure):
 		result=0.0
 		if(similarityMeasure=="euclidean"):
