@@ -29,25 +29,30 @@ def stemming(message):
 					newMessage=newMessage+" "+postagging[2].strip()
 			
 				else:
-					newMessage=newMessage+" "+postagging[0].strip()
+					if(postagging[1] in ["NC","NMEA","NP"] ):
+						newMessage=newMessage+" "+postagging[0].strip()
 	
 	return newMessage
 
 #given a text returns a version of text where all the stop words are removed (cast the text into lowercase)
 def removeStopWords(message):
 	newMessage=""
-	words=message.split(" ")
 	
-	forbiddenList=[",",".","!","?","\n","\t","(",")",","]
+	
+	forbiddenList=[",",".","!","?","\n","\t","(",")",',',"me","le"]
 	#replaces the word of forbiddenlsit
 	for word in forbiddenList:
-		message=message.replace(word,"");
+		message=message.replace(word,'');
 	#look for stopwords and ignore them
 	#converts the words to lower case
+
+	words=message.split(" ")
+
 	for word in words:
-		if ((not word in stopwords.words('spanish'))):
+		if ((not word in stopwords.words('spanish')) and not(word==" ")):
 			newMessage=newMessage+" "+word.lower()
 
+	print "cleaned Stop woerds"
 	print newMessage
 	return newMessage
 

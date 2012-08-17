@@ -9,21 +9,36 @@ import numpy as np
 from processing.LatentSemantic import *
 from math import sqrt
 from math import floor
+from math import cos
+from math import degrees
 
-#measures the distance among two vectors
+#measures the distance among two vectors, tffff
 def distance(v1,v2,similarityMeasure):
 		result=0.0
 		if(similarityMeasure=="euclidean"):
 				for index in range(0,len(v1)):
 						result=result+((v1[index]-v2[index])**2)
-				return sqrt(result)
+				return 100.0-sqrt(result)
+		if(similarityMeasure=="cosine"):
+				denominator=0.0
+				numerator=0.0
+				sumA=0.0
+				sumB=0.0
+				for index in range(0,len(v1)):
+						numerator=numerator+(v1[index]*v2[index])
+						sumA=sumA+(v1[index]**2)
+						sumB=sumB+(v2[index]**2)
+				result=numerator/(sqrt(sumA)*sqrt(sumB))
+				
+				
+				return result
 
 def main():
 	
 	#Read the file and convert triples into objects
 	
 	#read file with messages
-	listOfTriples=readCSV("/home/attickid/LPproject/LPForTopicIdentification/Data/terraReduced.csv")
+	listOfTriples=readCSV("/home/attickid/LPproject/LPForTopicIdentification/Data/terraReducedTest.csv")
 	
 	listOfData=[]
 	#convert the triples to objects
@@ -65,9 +80,10 @@ def main():
 	#SVD
 	matrix =np.matrix(instanceVectors)
 	print "calculating tf-idf"
-	#matrix=	tfidfTransform(matrix)
+	matrix=	tfidfTransform(instanceVectors)
 	print "calculatin svd"
-	matrixLSA=svdDimensionalityReduction(matrix,1)
+	matrixLSA=matrix
+	#matrixLSA=svdDimensionalityReduction(matrix,1)
 
 	print matrixLSA
 
@@ -80,13 +96,13 @@ def main():
 
 	for i in range(0,len(instanceVectors)):
 		for j in range(i+1,len(instanceVectors)):
-			distanceValue=distance(matrixLSA[i],matrixLSA[j],'euclidean')
+			distanceValue=distance(matrixLSA[i],matrixLSA[j],'cosine')
 			similarities[str(i)+'_'+str(j)]=distanceValue
 			juntoGraphFileContent=juntoGraphFileContent+str(i)+"\t"+str(j)+"\t"+str(distanceValue)+"\n"
 	graphFile.write(juntoGraphFileContent)
 
 	#this defines the number of seeds(annotated data for the algorithm)
-	numberOfSeeds=30
+	numberOfSeeds=10
 	currentNumberOfSeeds=0
 	
 	currentNumberOfSeedsPerLabel={}
@@ -95,7 +111,7 @@ def main():
 
 	#there should be an equal number of seeds for each label
 	numberOfSeedsPerLabel=math.floor(numberOfSeeds/(1.0*len(setOfLabels)))
-	numberOfSeeds=numberOfSeedsPerLabel*len(setOflabels)
+	numberOfSeeds=numberOfSeedsPerLabel*len(setOfLabels)
 
 	#creates the gold_labels for Junto( the instnaces whose label is known)
 	#seed files refer to those instances which label is already given
@@ -109,6 +125,7 @@ def main():
 			#if the instance is between the first 1000 then it is  a seed otherwise it is test
 			if(currentNumberOfSeedsPerLabel[instance.triple['label']]<numberOfSeedsPerLabel):
 				seedFileContent=seedFileContent+str(instance.triple['id'])+"\t"+instance.triple['label']+"\t"+"1.0\n"
+				currentNumberOfSeedsPerLabel[instance.triple['label']]=currentNumberOfSeedsPerLabel[instance.triple['label']]+1
 			else:
 				goldFileContent=goldFileContent+str(instance.triple['id'])+"\t"+instance.triple['label']+"\t"+"1.0\n"
 	seedFile.write(seedFileContent)
