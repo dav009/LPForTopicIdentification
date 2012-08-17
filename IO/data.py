@@ -1,4 +1,5 @@
 import processing.cleaning
+from math import log
 from utils.frencuencyTable import frecuencyTable
 class Instance:
 
@@ -57,9 +58,9 @@ def getSetOfWordsPerLabel(setOfLabels,setOfWords,listOfInstances,type):
 
 		print "getting words with high freqeuncy group by PMI"
 
-		for(label in setOfLabels):
+		for label in setOfLabels:
 			
-			for(word in setOfLabels):
+			for word in setOfWords:
 				triple={}
 				#how many times word-label have been seen together
 				labelWordCount=0.0
@@ -67,16 +68,16 @@ def getSetOfWordsPerLabel(setOfLabels,setOfWords,listOfInstances,type):
 				wordCount=0.0
 				#how many times the label has been seen in the instances
 				labelCount=0.0
-				for(instance in listOfInstances):
-					if(instance.getFrecuencyTable.get(word)>0 && instance.triple['label']==label):
+				for instance in listOfInstances:
+					if(instance.getFrecuencyTable().get(word)>0 and instance.triple['label']==label):
 						labelWordCount=labelWordCount+1.0
 					if(instance.triple['label']==label):
 						labelCount=labelCount+1.0
-					if(instance.getFrecuencyTable.get(word)>0):
+					if(instance.getFrecuencyTable().get(word)>0):
 						wordCount=wordCount+1.0
 				triple['word']=word
 				triple['label']=label
-				triple['pmi']=math.log(labelWordCount/(wordCount*labelCount))
+				triple['pmi']=log(labelWordCount/(wordCount*labelCount))
 			returnList.append(triple)
 
 
