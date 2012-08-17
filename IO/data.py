@@ -77,7 +77,12 @@ def getSetOfWordsPerLabel(setOfLabels,setOfWords,listOfInstances,type):
 						wordCount=wordCount+1.0
 				triple['word']=word
 				triple['label']=label
-				triple['pmi']=log(labelWordCount/(wordCount*labelCount))
+				print str()+" - log"
+				pmi=labelWordCount/(wordCount*labelCount)
+				if(pmi>0):
+					triple['pmi']=log(pmi)
+				else:
+					triple['pmi']=pmi
 			returnList.append(triple)
 
 
