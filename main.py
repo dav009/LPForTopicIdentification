@@ -4,6 +4,7 @@
 
 from IO.csvReader import readCSV
 from IO.data import Instance
+from IO.data import getSetOfWordsPerLabel
 from sets import Set
 import numpy as np
 from processing.LatentSemantic import *
@@ -38,7 +39,7 @@ def main():
 	#Read the file and convert triples into objects
 	
 	#read file with messages
-	listOfTriples=readCSV("/home/attickid/LPproject/LPForTopicIdentification/Data/terraReducedTest.csv")
+	listOfTriples=readCSV("/home/attickid/LPproject/LPForTopicIdentification/Data/sonyReduced.csv")
 	
 	listOfData=[]
 	#convert the triples to objects
@@ -64,6 +65,13 @@ def main():
 		currentVocabulary=instance.getFrecuencyTable().getKeys()
 		for v in currentVocabulary:
 			setOfWords.add(v)
+
+	print "looking for PMI"
+	listOfPMI=getSetOfWordsPerLabel(setOfLabels,setOfWords,listOfData,"PMI")
+	for pmi in listOfPMI:
+		print pmi['word']+"--"+pmi['pmi']+"--"+pmi['label']
+
+
 
 	#creates the vector for each instance
 	print "creating vectors for each message"
