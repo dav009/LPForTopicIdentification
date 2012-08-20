@@ -72,15 +72,17 @@ def main():
 	listOfAnnotatedData=[]
 	listOfUnnanotatedData=[]
 	for instance in listOfData:
-		if instance['label']!="":
+		if instance.triple['label']!="":
 			listOfAnnotatedData.append(instance)
 		else:
 			listOfUnnanotatedData.append(instance)
 
 	listOfPMI=getSetOfWordsPerLabel(setOfLabels,setOfWords,listOfAnnotatedData,"PMI")
-	for queue in listOfPMI:
+	for Keyqueue in listOfPMI.keys():
+		queue=listOfPMI[Keyqueue]
 		while not queue.empty():
 			pmi=queue.get()
+			print pmi
 			if(pmi['pmi']>0.000000000000000000000000000000000000000000000000000000000000000000):
 				print pmi['word']+"--"+str(pmi['pmi'])+"--"+pmi['label']
 
