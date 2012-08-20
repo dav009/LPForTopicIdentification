@@ -1,6 +1,7 @@
 import processing.cleaning
 from math import log
 from utils.frencuencyTable import frecuencyTable
+from  Queue import PriorityQueue
 class Instance:
 
 	def __init__(self,triple):
@@ -49,7 +50,13 @@ class Instance:
 #output: list of of [word,label,pmi]      
 def getSetOfWordsPerLabel(setOfLabels,setOfWords,listOfInstances,type):
 
-	returnList=[]
+	returnList={}
+
+	#initialize the priorityQueues
+	for label in setOfLabels:
+		returnList[label]=PriorityQueue()
+
+
 	if(type=="highFrequency"):
 		#get words with highfreqenquecny per label
 		print "getting words with high freqeuncy group by label"
@@ -94,7 +101,7 @@ def getSetOfWordsPerLabel(setOfLabels,setOfWords,listOfInstances,type):
 					triple['pmi']=log(pmi)/(-1* log(labelWordCount/(1.0*numberOfInstances)) )
 				else:
 					triple['pmi']=-1
-				returnList.append(triple)
+				returnList[label].put(1-triple['pmi'],triple)
 	return returnList
 
 
