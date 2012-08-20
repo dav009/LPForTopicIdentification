@@ -81,9 +81,9 @@ def main():
 	for Keyqueue in listOfPMI.keys():
 		queue=listOfPMI[Keyqueue]
 		while not queue.empty():
-			pmi=queue.get()
-			print pmi
-			if(pmi['pmi']>0.000000000000000000000000000000000000000000000000000000000000000000):
+			pmi=queue.get()[1]
+			
+			if(pmi['pmi']>0.00000000000000000000000000000000000000000000000000000000):
 				print pmi['word']+"--"+str(pmi['pmi'])+"--"+pmi['label']
 
 
