@@ -12,6 +12,7 @@ from math import sqrt
 from math import floor
 from math import cos
 from math import degrees
+from  Queue import PriorityQueue
 
 #measures the distance among two vectors, test gitplugin5
 def distance(v1,v2,similarityMeasure):
@@ -70,16 +71,18 @@ def main():
 	#get the instances which are annotated
 	listOfAnnotatedData=[]
 	listOfUnnanotatedData=[]
-	for(instance in listOfData):
-		if(instance['label']!=""):
+	for instance in listOfData:
+		if instance['label']!="":
 			listOfAnnotatedData.append(instance)
 		else:
 			listOfUnnanotatedData.append(instance)
 
-	listOfPMI=getSetOfWordsPerLabel(setOfLabels,setOfWords,listOfData,"PMI")
-	for pmi in listOfPMI:
-		if(pmi['pmi']>0.000000000000000000000000000000000000000000000000000000000000000000):
-			print pmi['word']+"--"+str(pmi['pmi'])+"--"+pmi['label']
+	listOfPMI=getSetOfWordsPerLabel(setOfLabels,setOfWords,listOfAnnotatedData,"PMI")
+	for queue in listOfPMI:
+		while not queue.empty():
+			pmi=queue.get()
+			if(pmi['pmi']>0.000000000000000000000000000000000000000000000000000000000000000000):
+				print pmi['word']+"--"+str(pmi['pmi'])+"--"+pmi['label']
 
 
 
