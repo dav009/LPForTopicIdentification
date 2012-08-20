@@ -68,7 +68,11 @@ def getSetOfWordsPerLabel(setOfLabels,setOfWords,listOfInstances,type):
 				wordCount=0.0
 				#how many times the label has been seen in the instances
 				labelCount=0.0
+
+				numberOfInstances=0.0
+
 				for instance in listOfInstances:
+					numberOfInstances=numberOfInstances+1.0
 					if(instance.getFrecuencyTable().get(word)>0 and instance.triple['label']==label):
 						labelWordCount=labelWordCount+1.0
 					if(instance.triple['label']==label):
@@ -78,13 +82,19 @@ def getSetOfWordsPerLabel(setOfLabels,setOfWords,listOfInstances,type):
 				triple['word']=word
 				triple['label']=label
 				
-				pmi=labelWordCount/(wordCount*labelCount)
+				pmi=labelWordCount/(1.0*numberOfInstances)
+				probOfLabel=(labelCount)/numberOfInstances
+				probOfWord=(wordCount)/numberOfInstances
+				pmi=pmi/(probOfLabel*probOfWord)
 				print str(pmi)+" - log"
-				if(pmi>0):
-					triple['pmi']=log(pmi)
+				if(labelWordCount>0):
+					print str(pmi)
+					print str(labelWordCount/(1.0*labelCount))
+					print str(log(labelWordCount/(1.0*labelCount)))
+					triple['pmi']=log(pmi)/(-1* log(labelWordCount/(1.0*numberOfInstances)) )
 				else:
-					triple['pmi']=pmi
-			returnList.append(triple)
+					triple['pmi']=-1
+				returnList.append(triple)
 	return returnList
 
 
