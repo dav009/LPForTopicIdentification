@@ -67,9 +67,19 @@ def main():
 			setOfWords.add(v)
 
 	print "looking for PMI"
+	#get the instances which are annotated
+	listOfAnnotatedData=[]
+	listOfUnnanotatedData=[]
+	for(instance in listOfData):
+		if(instance['label']!=""):
+			listOfAnnotatedData.append(instance)
+		else:
+			listOfUnnanotatedData.append(instance)
+
 	listOfPMI=getSetOfWordsPerLabel(setOfLabels,setOfWords,listOfData,"PMI")
 	for pmi in listOfPMI:
-		print pmi['word']+"--"+pmi['pmi']+"--"+pmi['label']
+		if(pmi['pmi']>0.000000000000000000000000000000000000000000000000000000000000000000):
+			print pmi['word']+"--"+str(pmi['pmi'])+"--"+pmi['label']
 
 
 
