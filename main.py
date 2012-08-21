@@ -13,7 +13,8 @@ from math import floor
 from math import cos
 from math import degrees
 from  Queue import PriorityQueue
-import utils.wordPredictor
+from utils.wordPredictor import wordPredictor
+from utils.wordPredictor import trainPredictors
 
 #measures the distance among two vectors, test gitplugin5
 def distance(v1,v2,similarityMeasure):
@@ -91,16 +92,17 @@ def main():
 		while not queue.empty():
 			pmi=queue.get()[1]
 			
-			if(pmi['pmi']>0.1):
+			if(pmi['pmi']>0.3):
 				print pmi['word']+"--"+str(pmi['pmi'])+"--"+pmi['label']
 				setOfSelectedWords.add(pmi['word'])
 
 
 	#train a set of Classifiers
 	print "training classifiers"
-	setOfClassifiers=wordPredictor.trainPredictors(listOfData,setOfSelectedWords,setOfWords)
+	setOfClassifiers=trainPredictors(listOfData,setOfSelectedWords,setOfWords)
 	
 
+	#once the classifiers are trained get the
 
 	#creates the vector for each instance
 	print "creating vectors for each message"
@@ -108,7 +110,17 @@ def main():
 	for instance in listOfData:
 		#for word in setOfWords: #when generating vectors with all the words in the vocabulary
 		for word in setOfSelectedWords: #when generating vectors with just the words above the MPI threshold
-			instance.vector.append(instance.getFrecuencyTable().get(word)*1.0)
+
+			if(instance.getFrecuencyTable().get(word)*1.0>0.0):
+				instance.vector.append(instance.getFrecuencyTable().get(word)*1.0)
+			else:
+				vocabulary_temp=setOfWords
+				vocabulary_temp.remove(word)
+				vectorRepresentation=instance.getVectorRepresentation(vocabulary_temp)
+				label=setOfClassifiers[word].predict(vectorRepresentation)
+				print "calculated label: "+str(label)
+				instance.vector.append(label)
+			#instance.vector.append(instance.getFrecuencyTable().get(word)*1.0) #if prediction does not matter
 		instanceVectors.append(instance.vector)
 			
 		
