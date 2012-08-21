@@ -2,6 +2,7 @@
 #given a set of words predict whether a word K is likely to appear or not
 
 from svmutil import *
+from IO.data import Instance
 
 class wordPredictor:
 
@@ -24,9 +25,48 @@ class wordPredictor:
 
 
 
+#intances= set of instances
+#setOfWords= words for which a classifier should be trained
+#trains N classifiers for predicting each of the words in SetOfWords
+#returns a dictionary. Key: word, value: wordPredictor
+#vocabulary: list of words in which the vectors of the instances will be generated
+def trainPredictors(instances,setOfWords,vocabulary):
+	dictionaryOfPredictors={}
+
+	#calculating a predictor
+	for keyWord in setOfWords:
+		vocabulary_temp=vocabulary
+		trainingSet=[]
+		trainingLabels=[]
+
+
+		if(keyWord in vocabulary):
+			vocabulary_temp.remove(keyWord)
+
+		for instance in instances:
+			if instance.getFrecuencyTable().get(keyWord)>0.0:
+				trainingLabels.append(1.0)
+			else:
+				trainingLabels.append(0.0)
+
+		traningSet.append(instance.getVectorRepresentation(vocabulary_temp))
+
+
+		dictionaryOfPredictors[keyWord]=wordPredictor(trainingSet,trainingLabels)
+
+
+
+
+	return dictionaryOfPredictors
+
+
+
 #just for testing
 if __name__=="__main__":
 	trainingSet=[[0,1,2], [0,1,0], [0,10,2] ]
-	labels=[ 1,0,1]
+	labels=[ 1,2,1]
 	predictor1=wordPredictor(trainingSet,labels)
-	print predictor1.predict([1,2,0])
+	
+	label= predictor1.predict([1,2,0])
+	print "predicted label"
+	print label
