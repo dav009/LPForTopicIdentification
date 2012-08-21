@@ -30,7 +30,11 @@ def distance(v1,v2,similarityMeasure):
 						numerator=numerator+(v1[index]*v2[index])
 						sumA=sumA+(v1[index]**2)
 						sumB=sumB+(v2[index]**2)
-				result=numerator/(sqrt(sumA)*sqrt(sumB))
+				denominator=(sqrt(sumA)*sqrt(sumB))
+				if(denominator>0.00000000000000000000000000000000000000000000000):
+					result=numerator/denominator
+				else:
+					result=0.0000000000000000000000000000000000000000000000000000000000000000000000000001
 				
 				
 				return result
@@ -78,13 +82,17 @@ def main():
 			listOfUnnanotatedData.append(instance)
 
 	listOfPMI=getSetOfWordsPerLabel(setOfLabels,setOfWords,listOfAnnotatedData,"PMI")
+	#the words whose PMI are over a threshold
+	setOfSelectedWords=Set()
 	for Keyqueue in listOfPMI.keys():
 		queue=listOfPMI[Keyqueue]
+
 		while not queue.empty():
 			pmi=queue.get()[1]
 			
-			if(pmi['pmi']>0.00000000000000000000000000000000000000000000000000000000):
+			if(pmi['pmi']>0.1):
 				print pmi['word']+"--"+str(pmi['pmi'])+"--"+pmi['label']
+				setOfSelectedWords.add(pmi['word'])
 
 
 
@@ -92,7 +100,8 @@ def main():
 	print "creating vectors for each message"
 	instanceVectors=[]
 	for instance in listOfData:
-		for word in setOfWords:
+		#for word in setOfWords: #when generating vectors with all the words in the vocabulary
+		for word in setOfSelectedWords: #when generating vectors with just the words above the MPI threshold
 			instance.vector.append(instance.getFrecuencyTable().get(word)*1.0)
 		instanceVectors.append(instance.vector)
 			
@@ -121,6 +130,7 @@ def main():
 		for j in range(i+1,len(instanceVectors)):
 			distanceValue=distance(matrixLSA[i],matrixLSA[j],'cosine')
 			similarities[str(i)+'_'+str(j)]=distanceValue
+			
 			juntoGraphFileContent=juntoGraphFileContent+str(i)+"\t"+str(j)+"\t"+str(distanceValue)+"\n"
 	graphFile.write(juntoGraphFileContent)
 
