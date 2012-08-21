@@ -37,6 +37,16 @@ class Instance:
 		#apply some similarity measure (cosine)
 		return 1
 
+	#returns a vector representation of this message
+	#keys are a list of words which will be used for the vector representation
+	def getVectorRepresentation(self,keys):
+		vector=[]
+		for key in keys:
+			value=self.tableOfFrequencies.get(key)
+			vector.append(value)
+		return vector
+
+
 
 #Auxialiry Functions
 
