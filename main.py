@@ -13,6 +13,7 @@ from math import floor
 from math import cos
 from math import degrees
 from  Queue import PriorityQueue
+import utils.wordPredictor
 
 #measures the distance among two vectors, test gitplugin5
 def distance(v1,v2,similarityMeasure):
@@ -94,6 +95,11 @@ def main():
 				print pmi['word']+"--"+str(pmi['pmi'])+"--"+pmi['label']
 				setOfSelectedWords.add(pmi['word'])
 
+
+	#train a set of Classifiers
+	print "training classifiers"
+	setOfClassifiers=wordPredictor.trainPredictors(listOfData,setOfSelectedWords,setOfWords)
+	
 
 
 	#creates the vector for each instance
