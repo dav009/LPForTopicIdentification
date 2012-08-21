@@ -1,7 +1,7 @@
 #SVM linear predictor for words
 #given a set of words predict whether a word K is likely to appear or not
 
-from svm import *
+from svmutil import *
 
 class wordPredictor:
 
@@ -12,20 +12,21 @@ class wordPredictor:
 		self.trainingSet=trainingSet
 		self.trainingLabels=trainingLabels
 		prob = svm_problem( trainingLabels,trainingSet)
-		param = svm_parameter(kernel_type = LINEAR, C = 10)
+		
 		#actual classifier
-		self.predictor=svm_model(prob, param)
+		self.predictor=svm_train(prob, '-t 0 -c 1')
 
 	#instance is an array [dimension1, dimension2..]
 	#predicts the label for an instance
 	def predict(self,instance):
-		return self.predictor.predict(instance)
+		predicted_labels, _, _= svm_predict([1],[instance],self.predictor)
+		return predicted_labels
 
 
 
 #just for testing
 if __name__=="__main__":
-	trainingSet=[[0 1 2] [0 1 0] [0 10 2] ]
-	labels=[ 1 0 1]
+	trainingSet=[[0,1,2], [0,1,0], [0,10,2] ]
+	labels=[ 1,0,1]
 	predictor1=wordPredictor(trainingSet,labels)
-	print predictor1.predict([1 2 0])
+	print predictor1.predict([1,2,0])
