@@ -3,6 +3,7 @@
 
 from svmutil import *
 from IO.data import Instance
+from copy import deepcopy
 
 class wordPredictor:
 
@@ -15,7 +16,7 @@ class wordPredictor:
 		prob = svm_problem( trainingLabels,trainingSet)
 		
 		#actual classifier
-		self.predictor=svm_train(prob, '-t 0 -c 1')
+		self.predictor=svm_train(prob, '-t 2 -c 1')
 
 	#instance is an array [dimension1, dimension2..]
 	#predicts the label for an instance
@@ -34,8 +35,14 @@ def trainPredictors(instances,setOfWords,vocabulary):
 	dictionaryOfPredictors={}
 
 	#calculating a predictor
+	count=0
 	for keyWord in setOfWords:
-		vocabulary_temp=vocabulary
+
+		print "training predictor for:"+keyWord
+		print str(count+1) + "-out of-"+ str(len(setOfWords))
+		count=count+1
+
+		vocabulary_temp=deepcopy(vocabulary)
 		trainingSet=[]
 		trainingLabels=[]
 
@@ -49,10 +56,14 @@ def trainPredictors(instances,setOfWords,vocabulary):
 			else:
 				trainingLabels.append(0.0)
 
-		traningSet.append(instance.getVectorRepresentation(vocabulary_temp))
+			trainingSet.append(instance.getVectorRepresentation(vocabulary_temp))
 
 
 		dictionaryOfPredictors[keyWord]=wordPredictor(trainingSet,trainingLabels)
+
+		for instance in instances:
+			if instance.getFrecuencyTable().get(keyWord)>0.0:
+				print "positive (?) prediction: "+ str(dictionaryOfPredictors[keyWord].predict(instance.getVectorRepresentation(vocabulary_temp)))
 
 
 
@@ -67,6 +78,6 @@ if __name__=="__main__":
 	labels=[ 1,2,1]
 	predictor1=wordPredictor(trainingSet,labels)
 	
-	label= predictor1.predict([1,2,0])
+	label= predictor1.predict([0,1,0])
 	print "predicted label"
 	print label

@@ -15,6 +15,7 @@ from math import degrees
 from  Queue import PriorityQueue
 from utils.wordPredictor import wordPredictor
 from utils.wordPredictor import trainPredictors
+from copy import deepcopy
 
 #measures the distance among two vectors, test gitplugin5
 def distance(v1,v2,similarityMeasure):
@@ -46,7 +47,7 @@ def main():
 	#Read the file and convert triples into objects
 	
 	#read file with messages
-	listOfTriples=readCSV("/home/attickid/LPproject/LPForTopicIdentification/Data/sonyReduced.csv")
+	listOfTriples=readCSV("Data/sony.csv")
 	
 	listOfData=[]
 	#convert the triples to objects
@@ -86,20 +87,24 @@ def main():
 	listOfPMI=getSetOfWordsPerLabel(setOfLabels,setOfWords,listOfAnnotatedData,"PMI")
 	#the words whose PMI are over a threshold
 	setOfSelectedWords=Set()
+
+	#of dimensions
+	numberOfDimensions=1000000000000000000000000000000000000000000
 	for Keyqueue in listOfPMI.keys():
 		queue=listOfPMI[Keyqueue]
-
-		while not queue.empty():
+		currentCount=0
+		while not queue.empty() and currentCount<numberOfDimensions:
 			pmi=queue.get()[1]
 			
-			if(pmi['pmi']>0.3):
+			if(pmi['pmi']>-2): #not taking into account the pmi
 				print pmi['word']+"--"+str(pmi['pmi'])+"--"+pmi['label']
+				currentCount=currentCount+1
 				setOfSelectedWords.add(pmi['word'])
 
 
 	#train a set of Classifiers
 	print "training classifiers"
-	setOfClassifiers=trainPredictors(listOfData,setOfSelectedWords,setOfWords)
+	#setOfClassifiers=trainPredictors(listOfData,setOfSelectedWords,setOfWords)
 	
 
 	#once the classifiers are trained get the
@@ -110,17 +115,20 @@ def main():
 	for instance in listOfData:
 		#for word in setOfWords: #when generating vectors with all the words in the vocabulary
 		for word in setOfSelectedWords: #when generating vectors with just the words above the MPI threshold
-
-			if(instance.getFrecuencyTable().get(word)*1.0>0.0):
-				instance.vector.append(instance.getFrecuencyTable().get(word)*1.0)
-			else:
-				vocabulary_temp=setOfWords
-				vocabulary_temp.remove(word)
-				vectorRepresentation=instance.getVectorRepresentation(vocabulary_temp)
-				label=setOfClassifiers[word].predict(vectorRepresentation)
-				print "calculated label: "+str(label)
-				instance.vector.append(label)
-			#instance.vector.append(instance.getFrecuencyTable().get(word)*1.0) #if prediction does not matter
+			#using linear classs
+			#if(instance.getFrecuencyTable().get(word)*1.0>100.0):
+			#	instance.vector.append(instance.getFrecuencyTable().get(word)*1.0)
+			#else:
+			#	vocabulary_temp=deepcopy(setOfWords)
+			#	if(word in setOfWords):
+			#		vocabulary_temp.remove(word)
+			#	vectorRepresentation=instance.getVectorRepresentation(vocabulary_temp)
+			#	label=setOfClassifiers[word].predict(vectorRepresentation)
+			#	if(label[0]>0.0):
+			#		print "calculated label: "+str(label)
+			#	instance.vector.append(label[0])
+			#/using linearclass
+			instance.vector.append(instance.getFrecuencyTable().get(word)*1.0) #if prediction does not matter
 		instanceVectors.append(instance.vector)
 			
 		
@@ -153,7 +161,8 @@ def main():
 	graphFile.write(juntoGraphFileContent)
 
 	#this defines the number of seeds(annotated data for the algorithm)
-	numberOfSeeds=10
+	percentageOfSeeds=0.1
+	numberOfSeeds=len(instanceVectors)*0.1
 	currentNumberOfSeeds=0
 	
 	currentNumberOfSeedsPerLabel={}
@@ -189,6 +198,47 @@ def main():
 
 	#asses output
 
+def  justGenerateSeeds(percentage):
 
+	setOfLabels=Set()
+
+	#this defines the number of seeds(annotated data for the algorithm)
+	percentageOfSeeds=percentage
+	#read file with messages
+	listOfTriples=readCSV("Data/sonyReduced.csv")
+	
+	instanceVectors=[]
+	#convert the triples to objects
+	for triple in listOfTriples:
+		instanceVectors.append(Instance(triple))
+		setOfLabels.add(triple['label'])
+
+	numberOfSeeds=len(instanceVectors)*percentage
+	currentNumberOfSeeds=0
+	
+	currentNumberOfSeedsPerLabel={}
+	for key in setOfLabels:
+		currentNumberOfSeedsPerLabel[key]=0
+
+	#there should be an equal number of seeds for each label
+	numberOfSeedsPerLabel=math.floor(numberOfSeeds/(1.0*len(setOfLabels)))
+	numberOfSeeds=numberOfSeedsPerLabel*len(setOfLabels)
+
+	#creates the gold_labels for Junto( the instnaces whose label is known)
+	#seed files refer to those instances which label is already given
+	seedFileContent=""
+	seedFile=open("seeds_"+str(percentage),'w')
+	
+	for instance in instanceVectors:
+		if ( (not instance.triple['label']=='') and (not instance.triple['label']==None) ):
+			#if the instance is between the first 1000 then it is  a seed otherwise it is test
+			if(currentNumberOfSeedsPerLabel[instance.triple['label']]<numberOfSeedsPerLabel):
+				seedFileContent=seedFileContent+str(instance.triple['id'])+"\t"+instance.triple['label']+"\t"+"1.0\n"
+				currentNumberOfSeedsPerLabel[instance.triple['label']]=currentNumberOfSeedsPerLabel[instance.triple['label']]+1
+	seedFile.write(seedFileContent)
+	
+
+
+#justGenerateSeeds(0.8)
 main()
 

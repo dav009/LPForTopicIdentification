@@ -8,7 +8,7 @@ import os
 from nltk.corpus import stopwords
 
 #PATH OF TREETRAGGER
-TREE_TAGGER_PATH="/home/attickid/LPproject/LPForTopicIdentification/processing/stemming/treeTagger/cmd/"
+TREE_TAGGER_PATH="stemming/treeTagger/cmd/"
 
 #given a message returns a message steamed
 def stemming(message):
@@ -39,7 +39,7 @@ def removeStopWords(message):
 	newMessage=""
 	
 	
-	forbiddenList=[",",".","!","?","\n","\t","(",")",',',"me","le"]
+	forbiddenList=[",",".","!","?","\n","\t","(",")",',',"me","le","jaja","jeje","wow","jiji","haha"]
 	#replaces the word of forbiddenlsit
 	for word in forbiddenList:
 		message=message.replace(word,'');
@@ -56,8 +56,15 @@ def removeStopWords(message):
 	print newMessage
 	return newMessage
 
+
+
+
+
 #just for testing
 if __name__=="__main__":
 	stemming('tu vives bien')
+
+
+
 
 
