@@ -1,0 +1,116 @@
+%\documentclass[4pt,a4paper]{article}
+\documentclass[4pt,a4paper,twocolumn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{algorithm}
+\usepackage{textcomp}
+\usepackage{fontenc}
+\usepackage{tipa}
+\usepackage{framed}
+\usepackage{multicol}
+\usepackage{color}
+\usepackage{qtree}
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+
+
+\author{David Przybilla\footnote{dav.alejandro@gmail.com , davida@coli.uni-saarland.de}\\ Term Paper for Unsupervised Semisupervised
+Learning Seminar\\ Saarland University}
+\title{Short Text Topic Classification using Label Propagation}
+\begin{document}
+\twocolumn[
+	 \begin{@twocolumnfalse}
+    \maketitle
+    \begin{abstract}
+      ...
+    \end{abstract}
+  \end{@twocolumnfalse}
+  ]
+
+
+
+
+\part*{Introduction}
+Twitter and Tuenti are popular microblogging services in Latinamerica,
+as prices of Smartphones became more accessible to people big communities
+have grown around this services.\\
+These communities are actively commenting everything from political events to products experiences.\\
+Therefore it has become of interest for many companies to analyze the microblogging data in order to understand
+what their clients want of their products, this led naturally to sentiment Analysis.\\ 
+\\
+One of the subtasks of Sentiment Analysis is to find the Topic or Aspect of an opinion,
+for example given a set of opinions about a mobile phone, it is possible to label each comment
+with the topic that it is referring to, this labels could be ``battery", ``design", ``operative system" etc.
+This Subtask can be modelled as a classification problem, given a set of fixed possible topics.\\
+\\
+In this paper a semisupervised technique is used in order to label the topic of a set of comments 
+related to a product or service.\\
+The semi supervised techniques presents two advantages.\\
+First by using semisupervised methods the amount of neccessary annotateed data is less,
+and second the unlabeled data is used during training, this is important since the amount of unlabeled data in these tasks is abundant and available.\\
+\\
+
+Though Classifying text has been a widely studied topic,the focus has been on long documents,
+whereas tweets are at most 144 characters long.\\
+The new trends in these social networks have led to research about classification in short texts, the latter has  shown that it arises new challenges, and previous approaches are not  effective.\\
+One of the reasons is that  user generated comments in the mentioned services tend to be extremly short, leading to sparce feature representations.\\
+\\
+In respect to short text classification X proposes [xxxxreferencesherexxxx] to do Feature Extension to deal with data sparcity, in his approach each comment is extended with extra words from an expansion vocabulary.
+[Overcoming the Brittleness Bottleneck using Wikipedia:
+Enhancing Text Categorization with Encyclopedic Knowledge] proposes on the other hand to use enciclopedic knowledge from wikipedia for extending the short commetns.
+As opposed to [Short Text Classification Using Very Few Words] who reduces even more the word space of the comments by using information retrieval voting schemes.\\
+\\
+In this paper, a Semisupervised technique called Label propagation is used
+in order to label a set of tweets about product reviews.\\
+Label propagation is reviewed in part X.\\
+Since data sparcity showed to be a problem a way for handling it
+is discuss in in part Y using an approach Z.\\
+The results are given in the part W.
+
+\part*{Pre-processing}
+
+Since the datasets used in this experiment are real data crawled from twitter and other sources there is a lot of noise in them.\\
+Some of the problems are (but not limited) to:\\
+\begin{itemize}
+	\item Miss spelled words, from typo errors to lack of accents.
+	\item Internet Language, replacing some letters for others whose phonetics are similar i.e: ``\textbf{qu}iero" (I want) for ``\textbf{k}iero", abbreviations and expressions (``Jaja'' ``jiji" ... )
+	\item Twitter Jargon such as: ``RT:",``@", hashtags and mentions. 
+\end{itemize} 
+
+The preprocessing done was the following:
+\begin{enumerate}
+	\item Remove Strange characters, such as hearts, and other unicode characters
+	\item Remove some of the Twitter Jargon 
+	\item Use TreeTagger [ http://www.ims.uni-stuttgart.de/projekte/corplex/TreeTagger/]for getting the part of speech and the stem of each word in each comment
+	\item discard those words that are not adjectives, nouns or verbs
+	\item replace each word by its stem in lowercase
+	\item remove accents from words
+\end{enumerate}
+
+\part*{Label Propagation}
+
+\part*{Feature Generation}
+\part*{Structure Learning}
+
+\part*{Experiment}
+Meridean [reference to meridean] is a Colombian company which extracts and saves tweets
+mentioning latinamerican companies or products.\\
+Basically they mine  tweets and offer sentiment analysis services to companies.\\
+The range of products reviews go from Electronic Devices to Sanitary Products.\\
+\\
+The experiment use two of their Collections of product reviews.\\
+The first DataSet review a mobilephone, the second dataset review a Sanitary product.\\
+\\
+La
+
+\part*{Results}
+\part*{Future Work}
+
+
+
+
+
+\end{document}
+
+
