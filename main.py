@@ -16,6 +16,7 @@ from  Queue import PriorityQueue
 from utils.wordPredictor import wordPredictor
 from utils.wordPredictor import trainPredictors
 from copy import deepcopy
+from utils.frencuencyTable import frecuencyTable
 
 #measures the distance among two vectors, test gitplugin5
 def distance(v1,v2,similarityMeasure):
@@ -43,11 +44,14 @@ def distance(v1,v2,similarityMeasure):
 				return result
 
 def main():
+
+	#table frquencuency of all the words in the messages
+	frecuencies=frecuencyTable()
 	
 	#Read the file and convert triples into objects
 	
 	#read file with messages
-	listOfTriples=readCSV("Data/sony.csv")
+	listOfTriples=readCSV("Data/sonyReduced.csv")
 	
 	listOfData=[]
 	#convert the triples to objects
@@ -74,6 +78,15 @@ def main():
 		for v in currentVocabulary:
 			setOfWords.add(v)
 
+		for word in instance.triple['message'].split(" "):
+			frecuencies.add(word)
+
+	listOfWordsByValue=frecuencies.sort_by_value()
+	print "words by frequencie---"
+	for wordd in listOfWordsByValue:
+		print wordd
+	print "--------------------------"
+
 	print "looking for PMI"
 	#get the instances which are annotated
 	listOfAnnotatedData=[]
@@ -96,7 +109,7 @@ def main():
 		while not queue.empty() and currentCount<numberOfDimensions:
 			pmi=queue.get()[1]
 			
-			if(pmi['pmi']>-2): #not taking into account the pmi
+			if(pmi['pmi']>0.3): #not taking into account the pmi
 				print pmi['word']+"--"+str(pmi['pmi'])+"--"+pmi['label']
 				currentCount=currentCount+1
 				setOfSelectedWords.add(pmi['word'])
@@ -228,17 +241,22 @@ def  justGenerateSeeds(percentage):
 	#seed files refer to those instances which label is already given
 	seedFileContent=""
 	seedFile=open("seeds_"+str(percentage),'w')
+
+	SetOfSeeds=Set()
 	
 	for instance in instanceVectors:
-		if ( (not instance.triple['label']=='') and (not instance.triple['label']==None) ):
+		if ( (not instance.triple['label']=='') and (not instance.triple['label']==None) and not instance.triple['message'] in SetOfSeeds):
 			#if the instance is between the first 1000 then it is  a seed otherwise it is test
 			if(currentNumberOfSeedsPerLabel[instance.triple['label']]<numberOfSeedsPerLabel):
+				SetOfSeeds.add(instance.triple['message'])
 				seedFileContent=seedFileContent+str(instance.triple['id'])+"\t"+instance.triple['label']+"\t"+"1.0\n"
 				currentNumberOfSeedsPerLabel[instance.triple['label']]=currentNumberOfSeedsPerLabel[instance.triple['label']]+1
 	seedFile.write(seedFileContent)
 	
 
 
-#justGenerateSeeds(0.8)
+#listOfPercentages=[0.1,0.2,0.3,0.5,0.8]
+#for percentage in listOfPercentages:
+#	justGenerateSeeds(percentage)
 main()
 

@@ -8,7 +8,7 @@ import os
 from nltk.corpus import stopwords
 
 #PATH OF TREETRAGGER
-TREE_TAGGER_PATH="stemming/treeTagger/cmd/"
+TREE_TAGGER_PATH="/home/attickid/LPproject/LPForTopicIdentification/processing/stemming/treeTagger/cmd/"
 
 #given a message returns a message steamed
 def stemming(message):

@@ -12,8 +12,14 @@
 \usepackage{qtree}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{hyperref}
 
-
+\hypersetup{  
+    linkcolor=red,          % color of internal links
+    citecolor=green,        % color of links to bibliography
+    filecolor=magenta,      % color of file links
+    urlcolor=cyan           % color of external links
+}
 
 \author{David Przybilla\footnote{dav.alejandro@gmail.com , davida@coli.uni-saarland.de}\\ Term Paper for Unsupervised Semisupervised
 Learning Seminar\\ Saarland University}
@@ -66,7 +72,8 @@ in order to label a set of tweets about product reviews.\\
 Label propagation is reviewed in part X.\\
 Since data sparcity showed to be a problem a way for handling it
 is discuss in in part Y using an approach Z.\\
-The results are given in the part W.
+The results are given in the part W.\\
+The source code of the implementation is available at \url{https://github.com/dav009/LPForTopicIdentification},the datasets however are not public, since they are constrained by a permission license.
 
 \part*{Pre-processing}
 
@@ -82,13 +89,14 @@ The preprocessing done was the following:
 \begin{enumerate}
 	\item Remove Strange characters, such as hearts, and other unicode characters
 	\item Remove some of the Twitter Jargon 
-	\item Use TreeTagger [ http://www.ims.uni-stuttgart.de/projekte/corplex/TreeTagger/]for getting the part of speech and the stem of each word in each comment
+	\item Use TreeTagger \href{http://www.ims.uni-stuttgart.de/projekte/corplex/TreeTagger/}{TreeTagger} \ref{Schmid94probabilisticpart-of-speech} for getting the part of speech and the stem of each word in each comment
 	\item discard those words that are not adjectives, nouns or verbs
 	\item replace each word by its stem in lowercase
 	\item remove accents from words
 \end{enumerate}
 
 \part*{Label Propagation}
+
 
 \part*{Feature Generation}
 \part*{Structure Learning}
@@ -105,11 +113,12 @@ The first DataSet review a mobilephone, the second dataset review a Sanitary pro
 La
 
 \part*{Results}
+
 \part*{Future Work}
 
 
 
-
+\bibliography{paper} 
 
 \end{document}
 
