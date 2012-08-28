@@ -12,12 +12,17 @@
 \usepackage{qtree}
 \usepackage{graphicx}
 \usepackage{amsmath}
-\usepackage{hyperref}
 
+\usepackage{cite}
+\usepackage{lastpage}
+\usepackage{lmodern}
+
+
+
+
+\usepackage[]{hyperref}
 \hypersetup{  
-    linkcolor=red,          % color of internal links
-    citecolor=green,        % color of links to bibliography
-    filecolor=magenta,      % color of file links
+	colorlinks=true,
     urlcolor=cyan           % color of external links
 }
 
@@ -65,7 +70,7 @@ One of the reasons is that  user generated comments in the mentioned services te
 In respect to short text classification X proposes [xxxxreferencesherexxxx] to do Feature Extension to deal with data sparcity, in his approach each comment is extended with extra words from an expansion vocabulary.
 [Overcoming the Brittleness Bottleneck using Wikipedia:
 Enhancing Text Categorization with Encyclopedic Knowledge] proposes on the other hand to use enciclopedic knowledge from wikipedia for extending the short commetns.
-As opposed to [Short Text Classification Using Very Few Words] who reduces even more the word space of the comments by using information retrieval voting schemes.\\
+As opposed to ~\cite{Sun:2012:STC:2348283.2348511} who reduces even more the word space of the comments by using information retrieval voting schemes.\\
 \\
 In this paper, a Semisupervised technique called Label propagation is used
 in order to label a set of tweets about product reviews.\\
@@ -89,7 +94,7 @@ The preprocessing done was the following:
 \begin{enumerate}
 	\item Remove Strange characters, such as hearts, and other unicode characters
 	\item Remove some of the Twitter Jargon 
-	\item Use TreeTagger \href{http://www.ims.uni-stuttgart.de/projekte/corplex/TreeTagger/}{TreeTagger} \ref{Schmid94probabilisticpart-of-speech} for getting the part of speech and the stem of each word in each comment
+	\item Use \href{http://www.ims.uni-stuttgart.de/projekte/corplex/TreeTagger/}{TreeTagger} ~\cite{Schmid94probabilisticpart-of-speech} for getting the part of speech and the stem of each word in each comment
 	\item discard those words that are not adjectives, nouns or verbs
 	\item replace each word by its stem in lowercase
 	\item remove accents from words
@@ -116,9 +121,10 @@ La
 
 \part*{Future Work}
 
+\bibliography{paper}{}
+\bibliographystyle{alpha}
 
 
-\bibliography{paper} 
 
 \end{document}
 
