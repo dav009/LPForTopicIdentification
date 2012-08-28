@@ -18,6 +18,8 @@ from utils.wordPredictor import trainPredictors
 from copy import deepcopy
 from utils.frencuencyTable import frecuencyTable
 
+
+
 #measures the distance among two vectors, test gitplugin5
 def distance(v1,v2,similarityMeasure):
 		result=0.0
@@ -42,6 +44,18 @@ def distance(v1,v2,similarityMeasure):
 				
 				
 				return result
+
+#given a path to a file and a list of vectors it generates a junto graph
+def createJuntoGraph(path,instanceVectors):
+	#creates a file with the graph description for JUNTO to use
+	graphFile=open(path,'w')
+	juntoGraphFileContent=""
+
+	for i in range(0,len(instanceVectors)):
+		for j in range(i+1,len(instanceVectors)):
+			distanceValue=distance(matrixLSA[i],matrixLSA[j],'cosine')
+			juntoGraphFileContent=juntoGraphFileContent+str(i)+"\t"+str(j)+"\t"+str(distanceValue)+"\n"
+	graphFile.write(juntoGraphFileContent)
 
 def main():
 
@@ -159,19 +173,13 @@ def main():
 	print matrixLSA
 
 	print "calculating the graph files for Junto"
-	#measure the similarities
-	similarities={}
-	#creates a file with the graph description for JUNTO to use
-	graphFile=open("input_graph",'w')
-	juntoGraphFileContent=""
+	
 
-	for i in range(0,len(instanceVectors)):
-		for j in range(i+1,len(instanceVectors)):
-			distanceValue=distance(matrixLSA[i],matrixLSA[j],'cosine')
-			similarities[str(i)+'_'+str(j)]=distanceValue
-			
-			juntoGraphFileContent=juntoGraphFileContent+str(i)+"\t"+str(j)+"\t"+str(distanceValue)+"\n"
-	graphFile.write(juntoGraphFileContent)
+
+	#creates a junt graph
+	createJuntoGraph('input_graph',instaceVectors)
+
+
 
 	#this defines the number of seeds(annotated data for the algorithm)
 	percentageOfSeeds=0.1
