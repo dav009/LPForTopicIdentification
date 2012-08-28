@@ -15,6 +15,7 @@ from math import degrees
 from  Queue import PriorityQueue
 from utils.wordPredictor import wordPredictor
 from utils.wordPredictor import trainPredictors
+from utils.wordPredictor import trainSVMPredictoForLabels
 from copy import deepcopy
 from utils.frencuencyTable import frecuencyTable
 
@@ -46,7 +47,7 @@ def distance(v1,v2,similarityMeasure):
 				return result
 
 #given a path to a file and a list of vectors it generates a junto graph
-def createJuntoGraph(path,instanceVectors):
+def createJuntoGraph(path,instanceVectors,matrixLSA):
 	#creates a file with the graph description for JUNTO to use
 	graphFile=open(path,'w')
 	juntoGraphFileContent=""
@@ -80,12 +81,16 @@ def main():
 		print "cleaning: "+str(instance.triple['id'])
 
 		#stores the labels
-		if(instance.triple['label']!=None and instance.triple['label']!=''):
-			setOfLabels.add(instance.triple['label'])
+
 
 		#clean message
 		instance.cleanMessage()
 		instance.measureFrequencies()
+
+		if(instance.triple['label']!=None and instance.triple['label']!=''):
+			setOfLabels.add(instance.triple['label'])
+
+		print setOfLabels
 		#gathers the frequencies in each message
 		#add each word to the setOfWords(vocabulary)
 		currentVocabulary=instance.getFrecuencyTable().getKeys()
@@ -123,18 +128,21 @@ def main():
 		while not queue.empty() and currentCount<numberOfDimensions:
 			pmi=queue.get()[1]
 			
-			if(pmi['pmi']>0.3): #not taking into account the pmi
-				print pmi['word']+"--"+str(pmi['pmi'])+"--"+pmi['label']
+			if(pmi['pmi']>-2): #not taking into account the pmi
+				#print pmi['word']+"--"+str(pmi['pmi'])+"--"+pmi['label']
 				currentCount=currentCount+1
 				setOfSelectedWords.add(pmi['word'])
 
 
-	#train a set of Classifiers
+	#train a set of Classifiers for words
 	print "training classifiers"
 	#setOfClassifiers=trainPredictors(listOfData,setOfSelectedWords,setOfWords)
 	
 
 	#once the classifiers are trained get the
+
+	#creates a file for fpgrowth
+	contentFileForFPGrowth=""
 
 	#creates the vector for each instance
 	print "creating vectors for each message"
@@ -156,7 +164,17 @@ def main():
 			#	instance.vector.append(label[0])
 			#/using linearclass
 			instance.vector.append(instance.getFrecuencyTable().get(word)*1.0) #if prediction does not matter
+			if(instance.getFrecuencyTable().get(word)>0):
+				contentFileForFPGrowth=contentFileForFPGrowth+" "+word
+		contentFileForFPGrowth=contentFileForFPGrowth+"\n"		
 		instanceVectors.append(instance.vector)
+
+		FPgrowthFile=open('fpgrowthdata','w')
+		FPgrowthFile.write(contentFileForFPGrowth)
+
+
+	
+
 			
 		
 		
@@ -170,14 +188,24 @@ def main():
 	matrixLSA=matrix
 	#matrixLSA=svdDimensionalityReduction(matrix,1)
 
-	print matrixLSA
+	#print matrixLSA
 
 	print "calculating the graph files for Junto"
 	
 
 
 	#creates a junt graph
-	createJuntoGraph('input_graph',instaceVectors)
+	#createJuntoGraph('input_graph',instaceVectors,matrixLSA)
+	
+
+
+
+	#trains a classifier for a label on all the data
+	#trainSVMPredictoForLabels(listOfData,setOfLabels,matrixLSA)
+	
+	currentNumberOfSeedsPerLabel={}
+	for key in setOfLabels:
+		currentNumberOfSeedsPerLabel[key]=0
 
 
 
@@ -191,6 +219,10 @@ def main():
 		currentNumberOfSeedsPerLabel[key]=0
 
 	#there should be an equal number of seeds for each label
+	percentage=0.9
+	numberOfSeeds=len(instanceVectors)*percentage
+	currentNumberOfSeeds=0
+
 	numberOfSeedsPerLabel=math.floor(numberOfSeeds/(1.0*len(setOfLabels)))
 	numberOfSeeds=numberOfSeedsPerLabel*len(setOfLabels)
 
@@ -198,19 +230,63 @@ def main():
 	#seed files refer to those instances which label is already given
 	seedFileContent=""
 	seedFile=open("seeds",'w')
+
+	#training set of instances
+	trainingListOfdata=[]
+	#training set of vectors
+	trainingMatrix=[]
+
+	#testData
+	testListOfdata=[]
+	testMatrix=[]
+
+
 	#gold file refers to the goldstandard towards the perfomrance is measureed
 	goldFileContent=""
 	goldFile=open("gold_labels",'w')
+	counter_=0
+	SetOfSeeds=Set()
+
 	for instance in listOfData:
 		if ( (not instance.triple['label']=='') and (not instance.triple['label']==None) ):
 			#if the instance is between the first 1000 then it is  a seed otherwise it is test
-			if(currentNumberOfSeedsPerLabel[instance.triple['label']]<numberOfSeedsPerLabel):
+			if(currentNumberOfSeedsPerLabel[instance.triple['label']]<numberOfSeedsPerLabel and  not instance.triple['message'] in SetOfSeeds):
 				seedFileContent=seedFileContent+str(instance.triple['id'])+"\t"+instance.triple['label']+"\t"+"1.0\n"
 				currentNumberOfSeedsPerLabel[instance.triple['label']]=currentNumberOfSeedsPerLabel[instance.triple['label']]+1
+				trainingListOfdata.append(instance)
+				trainingMatrix.append(matrixLSA[counter_])
+				SetOfSeeds.add(instance.triple['message'])
 			else:
 				goldFileContent=goldFileContent+str(instance.triple['id'])+"\t"+instance.triple['label']+"\t"+"1.0\n"
+				testListOfdata.append(instance)
+				testMatrix.append(matrixLSA[counter_])
+		counter_=counter_+1
+
 	seedFile.write(seedFileContent)
 	goldFile.write(goldFileContent)
+
+
+	#train an svm classifier for the given samples
+	print "len of training data:"+str(len(trainingListOfdata))
+	listOfClassifiers=trainSVMPredictoForLabels(trainingListOfdata,setOfLabels,trainingMatrix)
+	countOfRightClassifications=0
+	countOfPredictions=0
+	for i in range(0, len(testListOfdata)):
+		for label in setOfLabels:
+			
+			
+			prediction=listOfClassifiers[label].predict(testMatrix[i])[0]
+			print "predicttion of:: "+label+":"+str(prediction)+"__real:"+testListOfdata[i].triple['label']
+			if(prediction==1.0):
+				countOfPredictions=countOfPredictions+1
+				print "predicted:: "+label+"__real:"+testListOfdata[i].triple['label']
+				if(label==testListOfdata[i].triple['label']):
+					countOfRightClassifications=countOfRightClassifications+1
+
+	print "right class:"+str(countOfRightClassifications)
+	print "number of predctions:"+str(countOfPredictions)
+	print "presition: "+str(countOfRightClassifications/(countOfPredictions*1.0))
+
 
 	#gold labels
 
@@ -260,6 +336,8 @@ def  justGenerateSeeds(percentage):
 				seedFileContent=seedFileContent+str(instance.triple['id'])+"\t"+instance.triple['label']+"\t"+"1.0\n"
 				currentNumberOfSeedsPerLabel[instance.triple['label']]=currentNumberOfSeedsPerLabel[instance.triple['label']]+1
 	seedFile.write(seedFileContent)
+
+	return ()
 	
 
 
