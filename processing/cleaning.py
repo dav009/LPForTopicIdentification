@@ -5,10 +5,27 @@
 #4.get frecuency tables.
 #5.generating JUNTO graph format
 import os
+import unicodedata
+import re
 from nltk.corpus import stopwords
 
 #PATH OF TREETRAGGER
 TREE_TAGGER_PATH="/home/attickid/LPproject/LPForTopicIdentification/processing/stemming/treeTagger/cmd/"
+
+
+#remove accents
+def removeAccents(message):
+	returnMessage=""
+	for word in message.split(" "):
+		returnMessage=returnMessage+" "+removeAccentsFromWord(word).decode('utf-8')
+
+	print "cleaned accents"
+	print returnMessage
+	return returnMessage.strip()
+
+
+def removeAccentsFromWord(word):
+	return unicodedata.normalize('NFKD',word.decode('utf-8')).encode('ASCII', 'ignore').decode()
 
 #given a message returns a message steamed
 def stemming(message):
@@ -36,10 +53,35 @@ def stemming(message):
 
 #given a text returns a version of text where all the stop words are removed (cast the text into lowercase)
 def removeStopWords(message):
+
+	#look for patterns of twitter noise
+	 #pattern for mentions
+	p = re.compile( '@(\w)+')
+	message=p.sub("",message)
+
+	 #pattern for laughs
+	p = re.compile( 'jaja(ja)*')
+	message=p.sub("",message)
+
+	p = re.compile( 'jiji(ji)*')
+	message=p.sub("",message)
+
+	p = re.compile( 'jeje(je)*')
+	message=p.sub("",message)
+
+	p = re.compile( 'haha(ha)*')
+	message=p.sub("",message)
+
+	p = re.compile( 'w(w)*(o)+(w)*w')
+	message=p.sub("",message)
+
+	p = re.compile( '|')
+	message=p.sub("",message)
+
 	newMessage=""
 	
 	
-	forbiddenList=[",",".","!","?","\n","\t","(",")",',',"me","le","jaja","jeje","wow","jiji","haha"]
+	forbiddenList=["|",".","!","?","\n","\t","(",")",',',"me","le","jaja","jeje","wow","jiji","haha","te","yo","rt","rt:"]
 	#replaces the word of forbiddenlsit
 	for word in forbiddenList:
 		message=message.replace(word,'');
@@ -52,8 +94,8 @@ def removeStopWords(message):
 		if ((not word in stopwords.words('spanish')) and not(word==" ")):
 			newMessage=newMessage+" "+word.lower()
 
-	print "cleaned Stop woerds"
-	print newMessage
+
+	
 	return newMessage
 
 
