@@ -28,12 +28,12 @@
 
 \author{David Przybilla\footnote{dav.alejandro@gmail.com , davida@coli.uni-saarland.de}\\ Term Paper for Unsupervised Semisupervised
 Learning Seminar\\ Saarland University}
-\title{Short Text Topic Classification using Label Propagation}
+\title{Topic Classification of short product Reviews using Label Propagation}
 \begin{document}
 \twocolumn[
 	 \begin{@twocolumnfalse}
     \maketitle
-    \begin{abstract}
+   \begin{abstract}
       ...
     \end{abstract}
   \end{@twocolumnfalse}
@@ -67,10 +67,9 @@ whereas tweets are at most 144 characters long.\\
 The new trends in these social networks have led to research about classification in short texts, the latter has  shown that it arises new challenges, and previous approaches are not  effective.\\
 One of the reasons is that  user generated comments in the mentioned services tend to be extremly short, leading to sparce feature representations.\\
 \\
-In respect to short text classification X proposes [xxxxreferencesherexxxx] to do Feature Extension to deal with data sparcity, in his approach each comment is extended with extra words from an expansion vocabulary.
-[Overcoming the Brittleness Bottleneck using Wikipedia:
-Enhancing Text Categorization with Encyclopedic Knowledge] proposes on the other hand to use enciclopedic knowledge from wikipedia for extending the short commetns.
-As opposed to ~\cite{Sun:2012:STC:2348283.2348511} who reduces even more the word space of the comments by using information retrieval voting schemes.\\
+In respect to short text classification ~\cite{Fan:2010:NMC:1916732.1917677} proposes  to do Feature Extension to deal with data sparcity, in his approach each comment is extended with extra words from an expansion vocabulary.\\
+~\cite{Gabrilovich:2006:OBB:1597348.1597395} proposes on the other hand to use encyclopedic knowledge from wikipedia for extending the short comments.\\
+As opposed to the above ones  ~\cite{Sun:2012:STC:2348283.2348511} reduces the word space of the comments to keywords and use information retrieval with a voting scheme to find labels for short comments.\\
 \\
 In this paper, a Semisupervised technique called Label propagation is used
 in order to label a set of tweets about product reviews.\\

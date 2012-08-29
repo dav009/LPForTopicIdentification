@@ -42,6 +42,8 @@ def readCSV(path):
 			triple['label']=row[indexLabel2].replace(" ","_")
 		else:
 			triple['label']=row[indexLabel1].replace(" ","_")
+		triple['label']=triple['label'].lower()
+		triple['label']=triple['label'].strip()
 		triple['polarity']=row[indexPolarity]
 
 		listOfTriples.append(triple)

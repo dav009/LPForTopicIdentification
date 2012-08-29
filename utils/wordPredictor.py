@@ -16,7 +16,7 @@ class wordPredictor:
 		prob = svm_problem( trainingLabels,trainingSet)
 		
 		#actual classifier
-		self.predictor=svm_train(prob, '-t 2 -c 1')
+		self.predictor=svm_train(prob, '-t 1 -c 2 -g 1.2 -d 5')
 
 	#instance is an array [dimension1, dimension2..]
 	#predicts the label for an instance
@@ -24,6 +24,48 @@ class wordPredictor:
 		predicted_labels, _, _= svm_predict([1],[instance],self.predictor)
 		return predicted_labels
 
+#intances= set of instances
+#setOfLabels= set of labels
+#trains N classifiers for predicting each of the labels in SetOfLabels
+#returns a dictionary. Key: word, value: wordPredictor
+def trainSVMPredictoForLabels(instanceVectors,setOfLabels,matrix):
+	dictionaryOfPredictors={}
+	count=0
+	for label in setOfLabels:
+
+		print "training predictor for:"+label
+		print str(count+1) + "-out of-"+ str(len(setOfLabels))
+		count=count+1
+		trainingSet=[]
+		trainingLabels=[]
+		for i in range(0,len(instanceVectors)):
+			instance=instanceVectors[i]
+			currentLabel=instance.triple['label']
+			if label==currentLabel:
+				trainingLabels.append(1.0)
+			else:
+				trainingLabels.append(0.0)
+
+			trainingSet.append(matrix[i])
+		dictionaryOfPredictors[label]=wordPredictor(trainingSet,trainingLabels)
+		rightPredictions=0
+		for i in range(0,len(instanceVectors)):
+			instance=instanceVectors[i]
+			currentLabel=instance.triple['label']
+
+
+			prediction=dictionaryOfPredictors[label].predict(matrix[i])[0]
+			if label==currentLabel:
+				
+				#print "positive (?) prediction: "+ str(prediction)
+				if(1.0==prediction):
+					rightPredictions=rightPredictions+1
+			else:
+				#print "negative (?) prediction: "+ str(prediction)
+				if(0.0==prediction):
+					rightPredictions=rightPredictions+1
+		print "***********************presition***:"+str(rightPredictions/(len(instanceVectors)*1.0))
+	return dictionaryOfPredictors
 
 
 #intances= set of instances
@@ -64,6 +106,8 @@ def trainPredictors(instances,setOfWords,vocabulary):
 		for instance in instances:
 			if instance.getFrecuencyTable().get(keyWord)>0.0:
 				print "positive (?) prediction: "+ str(dictionaryOfPredictors[keyWord].predict(instance.getVectorRepresentation(vocabulary_temp)))
+			else:
+				print "negative (?) prediction: "+ str(dictionaryOfPredictors[keyWord].predict(instance.getVectorRepresentation(vocabulary_temp)))
 
 
 

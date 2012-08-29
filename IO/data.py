@@ -6,6 +6,7 @@ class Instance:
 
 	def __init__(self,triple):
 		self.triple=triple
+		
 		self.vector=[]
 
 	#change the message in the triple,cleaning it
@@ -15,6 +16,9 @@ class Instance:
 		
 		#remove stopwords,make words lowercase
 		self.triple['message']=processing.cleaning.removeStopWords(self.triple['message'])
+
+		#remove acceptns
+		self.triple['message']=processing.cleaning.removeAccents(self.triple['message'])
 		
 		return 1
 

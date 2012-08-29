@@ -78,6 +78,9 @@ def removeStopWords(message):
 	p = re.compile( '|')
 	message=p.sub("",message)
 
+	p = re.compile( '(!)+')
+	message=p.sub("",message)
+
 	newMessage=""
 	
 	
