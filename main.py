@@ -66,7 +66,7 @@ def main():
 	#Read the file and convert triples into objects
 	
 	#read file with messages
-	listOfTriples=readCSV("Data/sonyReduced.csv")
+	listOfTriples=readCSV("Data/terraReducedTest.csv")
 	
 	listOfData=[]
 	#convert the triples to objects
@@ -128,7 +128,7 @@ def main():
 		while not queue.empty() and currentCount<numberOfDimensions:
 			pmi=queue.get()[1]
 			
-			if(pmi['pmi']>-2): #not taking into account the pmi
+			if(pmi['pmi']>0.2): #not taking into account the pmi
 				#print pmi['word']+"--"+str(pmi['pmi'])+"--"+pmi['label']
 				currentCount=currentCount+1
 				setOfSelectedWords.add(pmi['word'])
@@ -210,16 +210,14 @@ def main():
 
 
 	#this defines the number of seeds(annotated data for the algorithm)
-	percentageOfSeeds=0.1
-	numberOfSeeds=len(instanceVectors)*0.1
-	currentNumberOfSeeds=0
+	
 	
 	currentNumberOfSeedsPerLabel={}
 	for key in setOfLabels:
 		currentNumberOfSeedsPerLabel[key]=0
 
 	#there should be an equal number of seeds for each label
-	percentage=0.9
+	percentage=0.1
 	numberOfSeeds=len(instanceVectors)*percentage
 	currentNumberOfSeeds=0
 
@@ -277,15 +275,22 @@ def main():
 			
 			prediction=listOfClassifiers[label].predict(testMatrix[i])[0]
 			print "predicttion of:: "+label+":"+str(prediction)+"__real:"+testListOfdata[i].triple['label']
+			countOfPredictions=countOfPredictions+1
 			if(prediction==1.0):
-				countOfPredictions=countOfPredictions+1
+				
 				print "predicted:: "+label+"__real:"+testListOfdata[i].triple['label']
 				if(label==testListOfdata[i].triple['label']):
 					countOfRightClassifications=countOfRightClassifications+1
+			else:
+				
+				print "predicted:: "+label+"__real:"+testListOfdata[i].triple['label']
+				if(label!=testListOfdata[i].triple['label']):
+					countOfRightClassifications=countOfRightClassifications+1
 
+	print "len of testdata:"+str(len(testListOfdata))
 	print "right class:"+str(countOfRightClassifications)
 	print "number of predctions:"+str(countOfPredictions)
-	print "presition: "+str(countOfRightClassifications/(countOfPredictions*1.0))
+	print "accuracy: "+str(countOfRightClassifications/(countOfPredictions*1.0))
 
 
 	#gold labels
