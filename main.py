@@ -58,7 +58,7 @@ def createJuntoGraph(path,instanceVectors,matrixLSA):
 			juntoGraphFileContent=juntoGraphFileContent+str(i)+"\t"+str(j)+"\t"+str(distanceValue)+"\n"
 	graphFile.write(juntoGraphFileContent)
 
-def trainSupervisedSVM():
+def trainSupervisedSVM(pathOfDataFile,percentageOfSamples,pmiLowerBound):
 
 	#table frquencuency of all the words in the messages
 	frecuencies=frecuencyTable()
@@ -66,7 +66,8 @@ def trainSupervisedSVM():
 	#Read the file and convert triples into objects
 	
 	#read file with messages
-	listOfTriples=readCSV("Data/terraReducedTest.csv")
+	#Data/terraReducedTest.csv
+	listOfTriples=readCSV(pathOfDataFile)
 	
 	listOfData=[]
 	#convert the triples to objects
@@ -128,7 +129,7 @@ def trainSupervisedSVM():
 		while not queue.empty() and currentCount<numberOfDimensions:
 			pmi=queue.get()[1]
 			
-			if(pmi['pmi']>0.2): #not taking into account the pmi
+			if(pmi['pmi']>pmiLowerBound): #not taking into account the pmi
 				#print pmi['word']+"--"+str(pmi['pmi'])+"--"+pmi['label']
 				currentCount=currentCount+1
 				setOfSelectedWords.add(pmi['word'])
@@ -217,7 +218,7 @@ def trainSupervisedSVM():
 		currentNumberOfSeedsPerLabel[key]=0
 
 	#there should be an equal number of seeds for each label
-	percentage=0.1
+	percentage=percentageOfSamples
 	numberOfSeeds=len(instanceVectors)*percentage
 	currentNumberOfSeeds=0
 
@@ -346,7 +347,7 @@ def  justGenerateSeeds(percentage):
 	
 
 
-def trainSemisupervisedSVM():
+def trainSemisupervisedSVM(pathOfDataFile,percentageOfSamples,pmiLowerBound):
 	print "training semi-supervised"
 	#table frquencuency of all the words in the messages
 	frecuencies=frecuencyTable()
@@ -354,7 +355,7 @@ def trainSemisupervisedSVM():
 	#Read the file and convert triples into objects
 	
 	#read file with messages
-	listOfTriples=readCSV("Data/terraReduced.csv")
+	listOfTriples=readCSV(pathOfDataFile)
 	
 	listOfData=[]
 	#convert the triples to objects
@@ -416,7 +417,7 @@ def trainSemisupervisedSVM():
 		while not queue.empty() and currentCount<numberOfDimensions:
 			pmi=queue.get()[1]
 			
-			if(pmi['pmi']>0.2): #not taking into account the pmi
+			if(pmi['pmi']>pmiLowerBound): #not taking into account the pmi
 				#print pmi['word']+"--"+str(pmi['pmi'])+"--"+pmi['label']
 				currentCount=currentCount+1
 				setOfSelectedWords.add(pmi['word'])
@@ -451,7 +452,7 @@ def trainSemisupervisedSVM():
 		currentNumberOfSeedsPerLabel[key]=0
 
 	#there should be an equal number of seeds for each label
-	percentage=0.1
+	percentage=percentageOfSamples
 	numberOfSeeds=len(listOfData)*percentage
 	currentNumberOfSeeds=0
 
@@ -626,8 +627,8 @@ def trainSemisupervisedSVM():
 
 
 #call for training a supervised SVM
-#trainSupervisedSVM()
+trainSupervisedSVM('Data/sony.csv',0.1,0.2)
 
 #call for training semisupervisd
-trainSemisupervisedSVM()
+#trainSemisupervisedSVM('Data/sony.csv',0.1,0.2)
 
