@@ -1,7 +1,7 @@
 #author: David Przybilla
 #date: July 2012
 #this file is the main of the app
-
+import sys
 from IO.csvReader import readCSV
 from IO.data import Instance
 from IO.data import getSetOfWordsPerLabel
@@ -11,6 +11,7 @@ from processing.LatentSemantic import *
 from math import sqrt
 from math import floor
 from math import cos
+from math import ceil
 from math import degrees
 from  Queue import PriorityQueue
 from utils.wordPredictor import wordPredictor
@@ -116,11 +117,65 @@ def trainSupervisedSVM(pathOfDataFile,percentageOfSamples,pmiLowerBound):
 			listOfAnnotatedData.append(instance)
 		else:
 			listOfUnnanotatedData.append(instance)
+	currentNumberOfSeedsPerLabel={}
+	for key in setOfLabels:
+		currentNumberOfSeedsPerLabel[key]=0
 
-	listOfPMI=getSetOfWordsPerLabel(setOfLabels,setOfWords,listOfAnnotatedData,"PMI")
+	#there should be an equal number of seeds for each label
+	percentage=percentageOfSamples
+	numberOfSeeds=len(listOfData)*percentage
+	currentNumberOfSeeds=0
+
+	numberOfSeedsPerLabel=math.floor(numberOfSeeds/(1.0*len(setOfLabels)))
+	numberOfSeeds=numberOfSeedsPerLabel*len(setOfLabels)
+	listForAuxiliaryTraining=[]
+	listOfTrainingData_=[]
+	SetOfSeeds2=Set()
+	for instance in listOfData:
+		if ( (not instance.triple['label']=='') and (not instance.triple['label']==None) ):
+			#if the instance is between the first 1000 then it is  a seed otherwise it is test
+			if(currentNumberOfSeedsPerLabel[instance.triple['label']]<numberOfSeedsPerLabel and  not instance.triple['message'] in SetOfSeeds2):
+				currentNumberOfSeedsPerLabel[instance.triple['label']]=currentNumberOfSeedsPerLabel[instance.triple['label']]+1
+				SetOfSeeds2.add(instance.triple['message'])
+				listOfTrainingData_.append(instance)
+			else:
+				listForAuxiliaryTraining.append(instance)
+		
+
+
+	listOfPMI=getSetOfWordsPerLabel(setOfLabels,setOfWords,listOfTrainingData_,"PMI")
 	#the words whose PMI are over a threshold
 	setOfSelectedWords=Set()
 
+
+
+
+	#of dimensions
+	numberOfDimensions=1000000000000000000000000000000000000000000
+	for Keyqueue in listOfPMI.keys():
+		queue=listOfPMI[Keyqueue]
+		currentCount=0
+		while not queue.empty() and currentCount<numberOfDimensions:
+			pmi=queue.get()[1]
+			
+			if(pmi['pmi']>pmiLowerBound): #not taking into account the pmi
+				#print pmi['word']+"--"+str(pmi['pmi'])+"--"+pmi['label']
+				currentCount=currentCount+1
+				setOfSelectedWords.add(pmi['word'])
+
+	totalNumberOfDiffWords=int(math.ceil(len(listOfWordsByValue)*0.4))
+	listOfWordsByValue.reverse()
+	counter=0
+	for wordd in listOfWordsByValue:
+		if(counter==totalNumberOfDiffWords):
+			break
+		print listOfWordsByValue
+		counter=counter+1
+		setOfSelectedWords.add(wordd[1])
+
+
+
+	
 	#of dimensions
 	numberOfDimensions=1000000000000000000000000000000000000000000
 	for Keyqueue in listOfPMI.keys():
@@ -310,13 +365,18 @@ def trainSupervisedSVM(pathOfDataFile,percentageOfSamples,pmiLowerBound):
 	for label in setOfLabels:
 		if(numberOfSamplesPerLabel[label]>0):
 			print "***"+label+"***"
+			presition=0
+			recall=0
 			if(dictOfPresicion[label][1]>0):
-				print "presition:"+str(dictOfPresicion[label][0]/(dictOfPresicion[label][1]*1.0))
+				presition=dictOfPresicion[label][0]/(dictOfPresicion[label][1]*1.0)
+				print "presition:"+str(presition)
 			else:
 				print "presition: none instance was classified done"
-			print "recall:"+str(dictOfPresicion[label][0]/(numberOfSamplesPerLabel[label]*1.0))
+			recall=dictOfPresicion[label][0]/(numberOfSamplesPerLabel[label]*1.0)
+			print "recall:"+str(recall)
+			if(presition+recall>0.00000000000000000000000000000):
+				print "fscore: "+str((2.0*presition*recall)/(presition+recall))
 			print "---"
-		
 
 
 	#gold labels
@@ -430,9 +490,38 @@ def trainSemisupervisedSVM(pathOfDataFile,percentageOfSamples,pmiLowerBound):
 		else:
 			listOfUnnanotatedData.append(instance)
 
-	listOfPMI=getSetOfWordsPerLabel(setOfLabels,setOfWords,listOfAnnotatedData,"PMI")
+	currentNumberOfSeedsPerLabel={}
+	for key in setOfLabels:
+		currentNumberOfSeedsPerLabel[key]=0
+
+	#there should be an equal number of seeds for each label
+	percentage=percentageOfSamples
+	numberOfSeeds=len(listOfData)*percentage
+	currentNumberOfSeeds=0
+
+	numberOfSeedsPerLabel=math.floor(numberOfSeeds/(1.0*len(setOfLabels)))
+	numberOfSeeds=numberOfSeedsPerLabel*len(setOfLabels)
+	listForAuxiliaryTraining=[]
+	listOfTrainingData_=[]
+	SetOfSeeds2=Set()
+	for instance in listOfData:
+		if ( (not instance.triple['label']=='') and (not instance.triple['label']==None) ):
+			#if the instance is between the first 1000 then it is  a seed otherwise it is test
+			if(currentNumberOfSeedsPerLabel[instance.triple['label']]<numberOfSeedsPerLabel and  not instance.triple['message'] in SetOfSeeds2):
+				currentNumberOfSeedsPerLabel[instance.triple['label']]=currentNumberOfSeedsPerLabel[instance.triple['label']]+1
+				SetOfSeeds2.add(instance.triple['message'])
+				listOfTrainingData_.append(instance)
+			else:
+				listForAuxiliaryTraining.append(instance)
+		
+
+
+	listOfPMI=getSetOfWordsPerLabel(setOfLabels,setOfWords,listOfTrainingData_,"PMI")
 	#the words whose PMI are over a threshold
 	setOfSelectedWords=Set()
+
+
+
 
 	#of dimensions
 	numberOfDimensions=1000000000000000000000000000000000000000000
@@ -446,6 +535,11 @@ def trainSemisupervisedSVM(pathOfDataFile,percentageOfSamples,pmiLowerBound):
 				#print pmi['word']+"--"+str(pmi['pmi'])+"--"+pmi['label']
 				currentCount=currentCount+1
 				setOfSelectedWords.add(pmi['word'])
+
+	totalNumberOfDiffWords=int(math.ceil(len(listOfWordsByValue)*0.4))
+	listOfWordsByValue.reverse()
+	for k in range(0,totalNumberOfDiffWords):
+		setOfSelectedWords.add(listOfWordsByValue[k][1])
 
 
 	#train a set of Classifiers for words
@@ -472,28 +566,6 @@ def trainSemisupervisedSVM(pathOfDataFile,percentageOfSamples,pmiLowerBound):
 		#this defines the number of seeds(annotated data for the algorithm)
 	
 	
-	currentNumberOfSeedsPerLabel={}
-	for key in setOfLabels:
-		currentNumberOfSeedsPerLabel[key]=0
-
-	#there should be an equal number of seeds for each label
-	percentage=percentageOfSamples
-	numberOfSeeds=len(listOfData)*percentage
-	currentNumberOfSeeds=0
-
-	numberOfSeedsPerLabel=math.floor(numberOfSeeds/(1.0*len(setOfLabels)))
-	numberOfSeeds=numberOfSeedsPerLabel*len(setOfLabels)
-	listForAuxiliaryTraining=[]
-	SetOfSeeds2=Set()
-	for instance in listOfData:
-		if ( (not instance.triple['label']=='') and (not instance.triple['label']==None) ):
-			#if the instance is between the first 1000 then it is  a seed otherwise it is test
-			if(currentNumberOfSeedsPerLabel[instance.triple['label']]<numberOfSeedsPerLabel and  not instance.triple['message'] in SetOfSeeds2):
-				currentNumberOfSeedsPerLabel[instance.triple['label']]=currentNumberOfSeedsPerLabel[instance.triple['label']]+1
-				SetOfSeeds2.add(instance.triple['message'])
-			else:
-				listForAuxiliaryTraining.append(instance)
-		
 
 	setOfClassifiers=trainPredictors(listForAuxiliaryTraining,setOfSelectedWords,setOfWords)
 
@@ -660,11 +732,17 @@ def trainSemisupervisedSVM(pathOfDataFile,percentageOfSamples,pmiLowerBound):
 	for label in setOfLabels:
 		if(numberOfSamplesPerLabel[label]>0):
 			print "***"+label+"***"
+			presition=0
+			recall=0
 			if(dictOfPresicion[label][1]>0):
-				print "presition:"+str(dictOfPresicion[label][0]/(dictOfPresicion[label][1]*1.0))
+				presition=dictOfPresicion[label][0]/(dictOfPresicion[label][1]*1.0)
+				print "presition:"+str(presition)
 			else:
 				print "presition: none instance was classified done"
-			print "recall:"+str(dictOfPresicion[label][0]/(numberOfSamplesPerLabel[label]*1.0))
+			recall=dictOfPresicion[label][0]/(numberOfSamplesPerLabel[label]*1.0)
+			print "recall:"+str(recall)
+			if(presition+recall>0.00000000000000000000000000000):
+				print "fscore: "+str((2.0*presition*recall)/(presition+recall))
 			print "---"
 		
 
@@ -675,8 +753,23 @@ def trainSemisupervisedSVM(pathOfDataFile,percentageOfSamples,pmiLowerBound):
 
 
 #call for training a supervised SVM
-#trainSupervisedSVM('Data/terraReduced.csv',0.5,0.2)
+#trainSupervisedSVM('Data/terraReduced.csv',0.05,0.2)
 
 #call for training semisupervisd
-trainSemisupervisedSVM('Data/terraReduced.csv',0.5,0.2)
+
+#sys.argv[1] typeOfTraining
+#sys.argv[2] path
+#sys.argv[3] %OFTrainingDAta
+#sys.argv[4] lowerBound of MPI
+
+path=sys.argv[2]
+trainingDataPercent=float(sys.argv[3])
+pmiLowerBound_=float(sys.argv[4])
+
+
+if(sys.argv[1]=="semi"):
+ 	trainSemisupervisedSVM(path,trainingDataPercent,pmiLowerBound_)
+else:
+	trainSupervisedSVM(path,trainingDataPercent,pmiLowerBound_)
+
 
