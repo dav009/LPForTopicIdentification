@@ -67,6 +67,7 @@ One of the constraints in this approach is that auxiliary problems should be  ab
 In contrast ~\cite{Zhu:2005:SLG:1104523} proposes a graph approach called label propagation for
 doing semi-supervised learning.\\
 This approach maps the data to a graph representation, then labelled instances propagate their labels through the graph, allowing unlabelled data to adopt the label of those instances which are similar.\\
+~\cite{Speriosu_twitterpolarity} uses Label Propagation for doing Polarity Classification on tweets.\\
 \\
 Though Classifying text has been a widely studied topic,the focus has been on long documents,
 whereas tweets are at most 144 characters long.\\
@@ -123,15 +124,15 @@ Camera\\
 
 \part*{Pre-processing}
 
-Since the datasets used in this experiment are real data crawled from twitter and other sources there is a lot of noise in them.\\
+The Datasets used in this experiment are actual data crawled from twitter and other sources, therefore there is a lot of noise in them.\\
 Some of the problems are (but not limited) to:\\
 \begin{itemize}
 	\item Miss spelled words, from typo errors to lack of accents.
 	\item Internet Language, replacing some letters for others whose phonetics are similar i.e: ``\textbf{qu}iero" (I want) for ``\textbf{k}iero", abbreviations and expressions (``Jaja'' ``jiji" ... )
-	\item Twitter Jargon such as: ``RT:",``@", hashtags and mentions. 
+	\item Twitter Jargon such as: ``RT:",``@"..
 \end{itemize} 
 
-The preprocessing done was the following:
+The pre-processing done was the following:
 \begin{enumerate}
 	\item Remove Strange characters, such as hearts, and other unicode characters
 	\item Remove some of the Twitter Jargon 
@@ -141,11 +142,42 @@ The preprocessing done was the following:
 	\item remove accents from words
 \end{enumerate}
 
+When it comes to pre-processing there could be wide number of possible 
+tasks that can be done, I try to keep it simple given the time constraints. \\
+\\
+As a result of this pre-processing each comment is converted into a bag of keywords.\\
+This will be later transform into a vector space representation.
+
+
+%% for future work mention that words like 'camera' that turn out to be good predictor, can be biased by the fact that is misswritten 'camera '  'cmarea'
+
 \part*{Label Propagation}
 
+This Semi-supervised learning graph method was proposed by Zhu ~\cite{Zhu:2005:SLG:1104523}.\\
+The idea behind Label propagation is similar to K-Neighbors, nevertheless Label propagation make use of the unlabeled data during the training process.\\
+
+This approach maps the data to a graph representation.
+In this representation each Arc of the graph will connect two nodes only if the two nodes are similar,
+and the weights of the arcs are directly proportional to the similarity of the incident nodes.\\
+
+With respect to our classification task,each node in the graph corresponds to the feature vector of a comment.
+The weights of the arcs are given by the cosine distance among the vectors.\\
+The final representation is a complete graph.\\
+\\
+In the LP algorithm, the label information of any
+vertex in a graph is propagated to nearby vertices
+through weighted edges until a global stable stage is
+achieved.~\cite{Chen:2006:REU:1220175.1220192}.
+If a weight arc is high, the label will travel easier.\\
+\\
+
+
+ 
+
+\part*{Structure Learning}
+A Semi-supervised learning method proposed in ~\cite{Ando:2005:FLP:1046920.1194905}.\\
 
 \part*{Feature Generation}
-\part*{Structure Learning}
 
 \part*{Experiment}
 
