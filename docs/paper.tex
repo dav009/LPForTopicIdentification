@@ -55,13 +55,19 @@ for example given a set of opinions about a mobile phone, it is possible to labe
 with the topic that it is referring to, this labels could be ``battery", ``design", ``operative system" etc.
 This Subtask can be modelled as a classification problem, given a set of fixed possible topics.\\
 \\
-In this paper a semisupervised technique is used in order to label the topic of a set of comments 
-related to a product or service.\\
-The semi supervised techniques presents two advantages.\\
-First by using semisupervised methods the amount of neccessary annotateed data is less,
-and second the unlabeled data is used during training, this is important since the amount of unlabeled data in these tasks is abundant and available.\\
+In the Scenario of text classification Semi-supervised techniques present two advantages:\\
+First a semi-supervised method should allow to classify text by annotating only a small portion of data,thus reducing the labor of annotating.\\
+Second the unlabeled data is used during training, this is important since the amount of unlabeled data in these tasks is abundant and available, therefore it can be used to provide extra knowledge to the model.\\
 \\
-
+In ~\cite{Ando:2005:FLP:1046920.1194905} propose a semi-supervised approach using linear classifiers for multiple learning tasks.\\
+They proposed to create additional classifications tasks (Auxiliary Problems) aside from the Target Problem.\\
+The underlying idea is that the auxiliary problems will help finding good predictors.\\
+One of the constraints in this approach is that auxiliary problems should be  able to automatically generate labelled data from the original unlabeled data.\\
+\\
+In contrast ~\cite{Zhu:2005:SLG:1104523} proposes a graph approach called label propagation for
+doing semi-supervised learning.\\
+This approach maps the data to a graph representation, then labelled instances propagate their labels through the graph, allowing unlabelled data to adopt the label of those instances which are similar.\\
+\\
 Though Classifying text has been a widely studied topic,the focus has been on long documents,
 whereas tweets are at most 144 characters long.\\
 The new trends in these social networks have led to research about classification in short texts, the latter has  shown that it arises new challenges, and previous approaches are not  effective.\\
@@ -71,13 +77,49 @@ In respect to short text classification ~\cite{Fan:2010:NMC:1916732.1917677} pro
 ~\cite{Gabrilovich:2006:OBB:1597348.1597395} proposes on the other hand to use encyclopedic knowledge from wikipedia for extending the short comments.\\
 As opposed to the above ones  ~\cite{Sun:2012:STC:2348283.2348511} reduces the word space of the comments to keywords and use information retrieval with a voting scheme to find labels for short comments.\\
 \\
-In this paper, a Semisupervised technique called Label propagation is used
-in order to label a set of tweets about product reviews.\\
-Label propagation is reviewed in part X.\\
-Since data sparcity showed to be a problem a way for handling it
-is discuss in in part Y using an approach Z.\\
-The results are given in the part W.\\
-The source code of the implementation is available at \url{https://github.com/dav009/LPForTopicIdentification},the datasets however are not public, since they are constrained by a permission license.
+This paper describes the setup of an experiment for classifying short-text comments of product reviews extracted from twitter.\\
+Two semi-supervised techniques are used, Label Propagation ~\cite{Zhu:2005:SLG:1104523}  and  a variation of Structural learning problem for multitasks ~\cite{Ando:2005:FLP:1046920.1194905}.\\
+The next sections describe briefly each of the proposed methods and how they were adapted to the task, then the pre-processing involved. \\
+Addionally the results are shown, where both methods are compared among themselves and to a supervised approach.
+Finally a short conclusion and future work are discussed.\\
+\\
+The source code of the implementation is available at github\footnote{\url{https://github.com/dav009/LPForTopicIdentification}},the datasets however are not public, since they are constrained by a permission license.
+
+\part*{Datasets}
+The Datasets of this experiments were provided by Meridean.\\
+Meridean\footnote{\url{http://http://merideangroup.com/}} is a Colombian company which extracts tweets
+mentioning latinamerican companies or products.\\
+\\
+The datasets are separated by product.\\
+There are 3 datasets in this experiment:
+\begin{itemize}
+	\item Clothing-Brand dataset
+	\item Mobile-Phone dataset
+	\item hygienic-product dataset
+\end{itemize}
+
+Each dataset is composed of tuples,each tuple contains : the source of the opinion, the opinion, the polarity and the topic.\\
+
+\begin{table}[h]
+\centering
+\begin{tabular}{| l |}
+\hline
+\textbf{Message:}\\
+$\#$ProbandoXperiaArcS Gracias @TalkMex.\\
+Las fotos se ven tan nitidas.\\
+\hline
+\textbf{Translation:}\\
+$\#$TestingXperiaArcs Thanks to @TalkMex.\\
+Pictures are very sharp.\\
+\hline
+\textbf{Topic:}\\
+Camera\\
+\hline
+\end{tabular}
+\caption{Sample Tuple}
+\label{tab:sampleTuple}
+\end{table}
+
 
 \part*{Pre-processing}
 
@@ -106,14 +148,8 @@ The preprocessing done was the following:
 \part*{Structure Learning}
 
 \part*{Experiment}
-Meridean [reference to meridean] is a Colombian company which extracts and saves tweets
-mentioning latinamerican companies or products.\\
-Basically they mine  tweets and offer sentiment analysis services to companies.\\
-The range of products reviews go from Electronic Devices to Sanitary Products.\\
-\\
-The experiment use two of their Collections of product reviews.\\
-The first DataSet review a mobilephone, the second dataset review a Sanitary product.\\
-\\
+
+
 La
 
 \part*{Results}
