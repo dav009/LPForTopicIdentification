@@ -267,10 +267,21 @@ def trainSupervisedSVM(pathOfDataFile,percentageOfSamples,pmiLowerBound):
 
 	#train an svm classifier for the given samples
 	print "len of training data:"+str(len(trainingListOfdata))
+	#pair of positivePredictions, numberOfPredictions
+	numberOfSamplesPerLabel={}
+	dictOfPresicion={}
+
+
+	for label in setOfLabels:
+		numberOfSamplesPerLabel[label]=0
+		dictOfPresicion[label]=[0,0]
+
 	listOfClassifiers=trainSVMPredictoForLabels(trainingListOfdata,setOfLabels,trainingMatrix)
 	countOfRightClassifications=0
 	countOfPredictions=0
+	notClassified=0
 	for i in range(0, len(testListOfdata)):
+		numberOfSamplesPerLabel[testListOfdata[i].triple['label']]=numberOfSamplesPerLabel[testListOfdata[i].triple['label']]+1
 		for label in setOfLabels:
 			
 			
@@ -278,10 +289,12 @@ def trainSupervisedSVM(pathOfDataFile,percentageOfSamples,pmiLowerBound):
 			print "predicttion of:: "+label+":"+str(prediction)+"__real:"+testListOfdata[i].triple['label']
 			countOfPredictions=countOfPredictions+1
 			if(prediction==1.0):
-				
+				dictOfPresicion[label][1]=dictOfPresicion[label][1]+1
 				print "predicted:: "+label+"__real:"+testListOfdata[i].triple['label']
 				if(label==testListOfdata[i].triple['label']):
+					dictOfPresicion[label][0]=dictOfPresicion[label][0]+1
 					countOfRightClassifications=countOfRightClassifications+1
+					
 			else:
 				
 				print "predicted:: "+label+"__real:"+testListOfdata[i].triple['label']
@@ -292,6 +305,18 @@ def trainSupervisedSVM(pathOfDataFile,percentageOfSamples,pmiLowerBound):
 	print "right class:"+str(countOfRightClassifications)
 	print "number of predctions:"+str(countOfPredictions)
 	print "accuracy: "+str(countOfRightClassifications/(countOfPredictions*1.0))
+
+	print "-----------------------"
+	for label in setOfLabels:
+		if(numberOfSamplesPerLabel[label]>0):
+			print "***"+label+"***"
+			if(dictOfPresicion[label][1]>0):
+				print "presition:"+str(dictOfPresicion[label][0]/(dictOfPresicion[label][1]*1.0))
+			else:
+				print "presition: none instance was classified done"
+			print "recall:"+str(dictOfPresicion[label][0]/(numberOfSamplesPerLabel[label]*1.0))
+			print "---"
+		
 
 
 	#gold labels
@@ -592,10 +617,21 @@ def trainSemisupervisedSVM(pathOfDataFile,percentageOfSamples,pmiLowerBound):
 
 	#train an svm classifier for the given samples
 	print "len of training data:"+str(len(trainingListOfdata))
+	#pair of positivePredictions, numberOfPredictions
+	numberOfSamplesPerLabel={}
+	dictOfPresicion={}
+
+
+	for label in setOfLabels:
+		numberOfSamplesPerLabel[label]=0
+		dictOfPresicion[label]=[0,0]
+
 	listOfClassifiers=trainSVMPredictoForLabels(trainingListOfdata,setOfLabels,trainingMatrix)
 	countOfRightClassifications=0
 	countOfPredictions=0
+	notClassified=0
 	for i in range(0, len(testListOfdata)):
+		numberOfSamplesPerLabel[testListOfdata[i].triple['label']]=numberOfSamplesPerLabel[testListOfdata[i].triple['label']]+1
 		for label in setOfLabels:
 			
 			
@@ -603,10 +639,12 @@ def trainSemisupervisedSVM(pathOfDataFile,percentageOfSamples,pmiLowerBound):
 			print "predicttion of:: "+label+":"+str(prediction)+"__real:"+testListOfdata[i].triple['label']
 			countOfPredictions=countOfPredictions+1
 			if(prediction==1.0):
-				
+				dictOfPresicion[label][1]=dictOfPresicion[label][1]+1
 				print "predicted:: "+label+"__real:"+testListOfdata[i].triple['label']
 				if(label==testListOfdata[i].triple['label']):
+					dictOfPresicion[label][0]=dictOfPresicion[label][0]+1
 					countOfRightClassifications=countOfRightClassifications+1
+					
 			else:
 				
 				print "predicted:: "+label+"__real:"+testListOfdata[i].triple['label']
@@ -618,7 +656,17 @@ def trainSemisupervisedSVM(pathOfDataFile,percentageOfSamples,pmiLowerBound):
 	print "number of predctions:"+str(countOfPredictions)
 	print "accuracy: "+str(countOfRightClassifications/(countOfPredictions*1.0))
 
-
+	print "-----------------------"
+	for label in setOfLabels:
+		if(numberOfSamplesPerLabel[label]>0):
+			print "***"+label+"***"
+			if(dictOfPresicion[label][1]>0):
+				print "presition:"+str(dictOfPresicion[label][0]/(dictOfPresicion[label][1]*1.0))
+			else:
+				print "presition: none instance was classified done"
+			print "recall:"+str(dictOfPresicion[label][0]/(numberOfSamplesPerLabel[label]*1.0))
+			print "---"
+		
 
 
 #listOfPercentages=[0.1,0.2,0.3,0.5,0.8]
@@ -627,8 +675,8 @@ def trainSemisupervisedSVM(pathOfDataFile,percentageOfSamples,pmiLowerBound):
 
 
 #call for training a supervised SVM
-trainSupervisedSVM('Data/sony.csv',0.1,0.2)
+#trainSupervisedSVM('Data/terraReduced.csv',0.5,0.2)
 
 #call for training semisupervisd
-#trainSemisupervisedSVM('Data/sony.csv',0.1,0.2)
+trainSemisupervisedSVM('Data/terraReduced.csv',0.5,0.2)
 
