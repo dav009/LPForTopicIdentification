@@ -37,8 +37,7 @@ Learning Seminar\\ Universit\"{a}t des Saarlandes}
       ...
     \end{abstract}
   \end{@twocolumnfalse}
-  ]
-
+ ]
 
 
 
@@ -245,7 +244,8 @@ By solving the auxiliary tasks, the feauture vectors of the training data for th
 This might shown useful in the setup of the experiment, since we are extending the feauture representations from knowledge of unlabelled data.\\
 \\
 Finally a linear classifier is learnt using the training data for the target problem.\\
-With respect to the ASO-SVD algorithm, this paper just explore a naive approach by using auxiliary problems, in this regard the auxiliary classifiers are used to extend the feature vectors.
+With respect to the ASO-SVD algorithm, this paper just explore a naive approach by using auxiliary problems, in this regard the auxiliary classifiers are used to extend the feature vectors.\\
+For the rest of the paper we will refer to this approach as Naive SL.
 
 
 \section{Feature Generation}
@@ -265,14 +265,39 @@ Each of the experiments were ran with different amounts of training data, specif
 For the Label Propagation  $Junto$ \footnote{ \url{https://github.com/parthatalukdar/junto} } ~\cite{Talukdar:2010:EGS:1858681.1858830} was used. $Junto$ is an open source implementation of the Label Propagation algorithm proposed by Zhu.\\
 \\
 For $SL$ and $SVM$ the libsvm\footnote{\url{http://www.csie.ntu.edu.tw/~cjlin/libsvm/}} library provided an implementation for training SVM.\\
-For all the linear classifiers trained in the experiments a  polynomial Kernel was picked and the value of $gamma$ was 1.2, the reason behind this choice is motivated by the empirical results obtained by ~\cite{Joachims:1998:TCS:645326.649721} in a similar task.
-
-
-
-
-La
-
+For all the linear classifiers trained in the experiments a  polynomial Kernel was picked and the value of $gamma$ was 1.2, the reason behind this choice is motivated by the empirical results obtained by ~\cite{Joachims:1998:TCS:645326.649721} in a similar task.\\
+\\
+For making the tasks suitable for the given computational power, a subset of the size of $\frac{1}{4}$ of each of the given datasets was used, this has a major drawback, since the more the data the better the behavior of the semi-supervised algorithms.
+Also an upper bound on the number of auxiliary classifiers created by  the naive structure learning was imposed, the auxiliary problems would be 40\% of the most common words in the unlabeled data and the words with highest PMI from the Labelled data.\\
+A major drawback of Label Propagation from a running time perspective is having to calculate a complete graph containing the similarity among the nodes.Calculating a graph with 2 or more millions of arcs consume lots of resources.
 \section{Results}
+In the following subsections, the results for each dataset are described.\\
+\\
+In overall the Naive SL could maintain the f-score given by the Supervised approach, in some cases was able to get a much better f-score by improving recall, in some other cases a slightly better recall resulted in a decline of the precision thus leading to a worse f-score.\\
+\\
+The LP approach on the other hand raised in labels where both of the previous approaches failed such as with the label $Resistance$  in the sportwear dataset Figure~\ref{fig:nike_90_fscore} or $Brand$ $Support$ Figure~\ref{fig:nike_10_fscore},  $Tenderness$  in the Hygienic Product dataset Figure~\ref{fig:terra_30_fscore}, and many others like $Photography$,$Screen$ and $Social$ $Networks$ in the Mobilephone dataset Figure~\ref{fig:sony_30_fscore_more}.\\
+\\
+The Hygienic Product and Sportwear datasets give some decent results, whereas the Mobile Phone dataset shown to be more challenging.\\
+\\
+One factor that might have affected the overall performance was using a subset of the data, this specially seems to affect LP.LP profits from abundant unnanotated data, my hypothesis is that using a very small set of seeds with a large number of unnanotated data should improve the scores given below.\\
+The reason for LP giving such low scores  on some of the tasks might be : first because of the limited number of data, there are some disconnected segments of the graph, therefore a proper propagation cannot be carried out successfully for prediction.\\
+Second the feature vectors are very sparce, leading to the problem mentioned above.\\
+In an attempt to discover whether both more data and selecting more features would benefit the approach  a second test was carried out in the Mobile Phone dataset. In this attempt more data were taken into account and a larger number of features were allowed to be part of the feature vectors, the results are given in Figure~\ref{fig:sony_10_fscore_more} and Figure~\ref{fig:sony_30_fscore_more}, in general it can be said that there is much a better f-score for a larger number of labels, so It is possible to speculate that using the whole datasets would double the f-scores given in this report.\\
+\\
+
+Since comments are reduced to a bag of keywords there other factors which could have caused the given results  are:
+\begin{itemize}
+\item Noise,the given data is actual user-generated content thus very noisy.\\
+Noisy data such as miss written words can lead to bad classifications or points isolated in the LP graph. Take as an example the label $Camera$ for the Mobile phone dataset, if a good predictor for this label is the actual word ''camera" ,and it is seen in the labelled data, variations such as ''camraa" and others might not result predictive.
+
+\item Sparsity and Short Text, feature vectors are very sparce and text is short. This could affect in the following ways, lets think again on the label $Camera$ for the Mobile  phone dataset, if we assume we are classifying long texts, an annotated instance can reveal a lot of the topic vocabulary , in this case words such as ''resolution", ''megapixels" and so on.\\
+On the other hand in the short text classification, you got at most 144 characters per text, so you might end up only with a small subset of topic related words. For example, lets assume you have a good predictor in your seed set which is the word ''Camera" and ''resolution". If there is a message saying just: ''it has a good amount of megapixels", it will be very unlike to be classified correctly, unless there is another entry linking ''megapixels" with one of the predicting words in the seed set.\\
+\\
+With respect to the Topic Vocabulary, I would speculate that this really affect the performance. In the Hygenic Product and  Sportwear the terms range are more or less reduced, this is not the case of the mobile phone dataset, the range of topic vocabulary for each label is huge, just take into account the label $Application$, a comment can be given this label if it has a mention to a well known IOS or Android App, such as ''Angry Birds", furthermore take into account the label $Social$ $Network$ where social networks' names are mentioned, on top of that combine all the possible technical words that might appear with the labels $Camera$, $OS$, $Photography$.
+
+\end{itemize} 
+
+
 
 \section{Future Work}
 %other LP variations ( MAD for noisy ..)
@@ -284,6 +309,116 @@ La
 \bibliography{paper}{}
 \bibliographystyle{alpha}
 
+
+
+
+
+\begin{figure*}[]
+  
+  \centering
+    \includegraphics[scale=0.7]{graphics/sportWear/fscore-10-nike}
+    \caption{F-Score, 10\% Training Data, Sportwear dataset}
+   \label{fig:nike_10_fscore}  
+\end{figure*}
+
+\begin{figure*}[]
+  
+  \centering
+    \includegraphics[scale=0.7]{graphics/sportWear/fscore-30-nike}
+    \caption{F-Score, 30\% Training Data, Sportwear dataset}
+   \label{fig:nike_30_fscore}  
+\end{figure*}
+
+
+\begin{figure*}[]
+  
+  \centering
+    \includegraphics[scale=0.7]{graphics/sportWear/fscore-60-nike}
+    \caption{F-Score, 60\% Training Data, Sportwear dataset}
+   \label{fig:nike_60_fscore}  
+\end{figure*}
+
+\begin{figure*}[]
+  
+  \centering
+    \includegraphics[scale=0.7]{graphics/sportWear/fscore-90-nike}
+    \caption{F-Score, 90\% Training Data, Sportwear dataset}
+   \label{fig:nike_90_fscore}  
+\end{figure*}
+
+
+\begin{figure*}[]
+  
+  \centering
+    \includegraphics[scale=0.7]{graphics/terra/fscore-terra-10}
+    \caption{F-Score, 10\% Training Data,Hygienic Product}
+   \label{fig:terra_10_fscore}  
+\end{figure*}
+
+
+\begin{figure*}[]
+  
+  \centering
+    \includegraphics[scale=0.7]{graphics/terra/fscore-terra-30}
+    \caption{F-Score, 30\% Training Data, Hygienic Product}
+   \label{fig:terra_30_fscore}  
+\end{figure*}
+
+
+
+
+\begin{figure*}[]
+  
+  \centering
+    \includegraphics[scale=0.7]{graphics/sony/halfData/fscore-10-sony}
+    \caption{F-Score, 10\% Training Data, Mobile Phone dataset}
+   \label{fig:sony_10_fscore_half}  
+\end{figure*}
+
+\begin{figure*}[]
+  
+  \centering
+    \includegraphics[scale=0.7]{graphics/sony/halfData/fscore-30-sony}
+    \caption{F-Score, 30\% Training Data, Mobile Phone dataset}
+   \label{fig:sony_30_fscore_half}  
+\end{figure*}
+
+\begin{figure*}[]
+  
+  \centering
+    \includegraphics[scale=0.7]{graphics/sony/halfData/fscore-60-sony}
+    \caption{F-Score, 60\% Training Data, Mobile Phone dataset}
+   \label{fig:sony_60_fscore_half}  
+\end{figure*}
+
+
+\begin{figure*}[]
+  
+  \centering
+    \includegraphics[scale=0.7]{graphics/sony/halfData/fscore-90-sony}
+    \caption{F-Score, 90\% Training Data, Mobile Phone dataset}
+   \label{fig:sony_90_fscore_half}  
+\end{figure*}
+
+
+
+%more data!
+
+\begin{figure*}[]
+  
+  \centering
+    \includegraphics[scale=0.7]{graphics/sony/moreData/fscore-10-sony}
+    \caption{F-Score, 10\% Training Data, Mobile Phone dataset, More Features and Data}
+   \label{fig:sony_10_fscore_more}  
+\end{figure*}
+
+\begin{figure*}[]
+  
+  \centering
+    \includegraphics[scale=0.7]{graphics/sony/moreData/fscore-30-sony}
+    \caption{F-Score, 30\% Training Data, Mobile Phone dataset,More Features and Data}
+   \label{fig:sony_30_fscore_more}  
+\end{figure*}
 
 
 \end{document}
