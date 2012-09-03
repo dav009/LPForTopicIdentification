@@ -33,12 +33,13 @@ Learning Seminar\\ Universit\"{a}t des Saarlandes}
 \twocolumn[
 	 \begin{@twocolumnfalse}
     \maketitle
-   \begin{abstract}
-      ...
-    \end{abstract}
   \end{@twocolumnfalse}
  ]
 
+   \begin{abstract}
+      Microblogging has become a trend,thus many users are using such platforms to share their opinions.Mining these opinions can reveal valuable information to companies, such as what features to develop in their products or marketing strategies.However there are  major drawbacks when mining tweets, first their length do not provide enough word occurrences so traditional bag-of-words methods have limitations, second they are extremely noisy,and third annotated data is limited and costly to get.\\
+      In this paper we address the problem of classifying short product reviews by using semisupervised learning. A Comparison among two semisupervised methods and a supervised method is given. Finally we propose different ways to improve the given results by injecting knowledge into the semisupervised models.
+    \end{abstract}
 
 
 \section{Introduction}
@@ -47,7 +48,7 @@ as prices of Smartphones became more accessible to people big communities
 have grown around this services.\\
 These communities are actively commenting everything from political events to products experiences.\\
 Therefore it has become of interest for many companies to analyze the microblogging data in order to understand
-what their clients want of their products, this led naturally to sentiment Analysis.\\ 
+what their clients want of their products, this led naturally to sentiment Analysis.\\
 \\
 One of the subtasks of Sentiment Analysis is to find the Topic or Aspect of an opinion,
 for example given a set of opinions about a mobile phone, it is possible to label each comment
@@ -58,7 +59,7 @@ In the Scenario of text classification Semi-supervised techniques present two ad
 First a semi-supervised method should allow to classify text by annotating only a small portion of data,thus reducing the labor of annotating.\\
 Second the unlabeled data is used during training, this is important since the amount of unlabelled data in these tasks is abundant and available, therefore it can be used to provide extra knowledge to the model.\\
 \\
-In ~\cite{Ando:2005:FLP:1046920.1194905} Zhang and Kubota proposed a semi-supervised approach using linear classifiers for multiple learning tasks.\\
+Zhang and Kubota ~\cite{Ando:2005:FLP:1046920.1194905} proposed a semi-supervised approach using linear classifiers for multiple learning tasks.\\
 They proposed to create additional classifications tasks (Auxiliary Problems) aside from the Target Problem.\\
 The underlying idea is that the auxiliary problems will help finding good predictive structures.\\
 One of the constraints in this approach is that auxiliary problems should be  able to automatically generate labelled data from the original unlabeled data.
@@ -69,7 +70,7 @@ doing semi-supervised learning.\\
 This approach maps the data to a graph representation, then labelled instances propagate their labels through the graph, allowing unlabelled data to adopt the label of those instances which are similar.\\
 ~\cite{Speriosu_twitterpolarity} uses Label Propagation for doing Polarity Classification on tweets.\\
 \\
-Though Classifying text has been a widely studied topic,the focus has been on long documents,
+Even though Classifying text has been a widely studied topic,the focus has been on long documents,
 whereas tweets are at most 144 characters long.\\
 The new trends in these social networks have led to research about classification in short texts, the latter has  shown that it arises new challenges, and former approaches are not  effective.\\
 One of the reasons is that  user generated comments in the mentioned services tend to be extremely short, leading to sparce feature representations.\\
@@ -234,7 +235,7 @@ The Auxiliary Tasks are trained on the unlabelled data,in consequence one constr
 \\
 In this paper's experiment, the target task corresponds to find the label of each comment.\\
 The auxiliary problems are defined as:\\
-Learn a linear predictor using the Unlabelled data for the $K$ most common words in the unlabelled data and a predictor for the words with highest Pointwise mutual information(PMI) from the Labelled Data.\\
+Learning a linear predictor using the Unlabelled data for the $K$ most common words in the unlabelled data and a predictor for the words with highest Pointwise mutual information(PMI) from the Labelled Data.\\
 By doing this both the features of the labelled data and unlabelled data will be extended, the labelled data will be extended with features from the unlabelled data, and the unlabelled data will be extended with predictive features of the labelled data.\\
 \\
 For learning this tasks, first the Words with highest PMI are found using the labelled data, then the words with highest frequency in the unlabelled data are found.\\
