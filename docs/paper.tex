@@ -38,13 +38,13 @@ Learning Seminar\\ Universit\"{a}t des Saarlandes}
 
    \begin{abstract}
       Microblogging has become a trend,thus many users are using such platforms to share their opinions.Mining these opinions can reveal valuable information to companies, such as what features to develop in their products or marketing strategies.However there are  major drawbacks when mining tweets, first their length do not provide enough word occurrences so traditional bag-of-words methods have limitations, second they are extremely noisy,and third annotated data is limited and costly to get.\\
-      In this paper we address the problem of classifying short product reviews by using semisupervised learning. A Comparison among two semisupervised methods and a supervised method is given. Finally we propose different ways to improve the given results by injecting knowledge into the semisupervised models.
+      In this paper we address the problem of classifying short product reviews by using semisupervised learning. A comparison among two semisupervised methods and a supervised method is given. Finally we propose different ways to improve the given results by injecting knowledge into the semisupervised models.
     \end{abstract}
 
 
 \section{Introduction}
 Twitter and Tuenti are popular microblogging services in Latinamerica,
-as prices of Smartphones became more accessible to people big communities
+as prices of smartphones became more accessible to people big communities
 have grown around this services.\\
 These communities are actively commenting everything from political events to products experiences.\\
 Therefore it has become of interest for many companies to analyze the microblogging data in order to understand
@@ -55,7 +55,7 @@ for example given a set of opinions about a mobile phone, it is possible to labe
 with the topic that it is referring to, this labels could be ``battery", ``design", ``operative system" etc.
 This Subtask can be modelled as a classification problem, given a set of fixed possible topics.\\
 \\
-In the Scenario of text classification Semi-supervised techniques present two advantages:\\
+In the scenario of text classification Semi-supervised techniques present two advantages:\\
 First a semi-supervised method should allow to classify text by annotating only a small portion of data,thus reducing the labor of annotating.\\
 Second the unlabeled data is used during training, this is important since the amount of unlabelled data in these tasks is abundant and available, therefore it can be used to provide extra knowledge to the model.\\
 \\
@@ -70,7 +70,7 @@ doing semi-supervised learning.\\
 This approach maps the data to a graph representation, then labelled instances propagate their labels through the graph, allowing unlabelled data to adopt the label of those instances which are similar.\\
 ~\cite{Speriosu_twitterpolarity} uses Label Propagation for doing Polarity Classification on tweets.\\
 \\
-Even though Classifying text has been a widely studied topic,the focus has been on long documents,
+Even though classifying text has been a widely studied topic,the focus has been on long documents,
 whereas tweets are at most 144 characters long.\\
 The new trends in these social networks have led to research about classification in short texts, the latter has  shown that it arises new challenges, and former approaches are not  effective.\\
 One of the reasons is that  user generated comments in the mentioned services tend to be extremely short, leading to sparce feature representations.\\
@@ -159,7 +159,7 @@ This Semi-supervised learning graph method was proposed by Zhu ~\cite{Zhu:2005:S
 The idea behind Label propagation is similar to K-Neighbours, nevertheless Label propagation make use of the unlabelled data during the training process.\\
 
 This approach maps the data to a graph representation.
-In this representation each Arc of the graph will connect two nodes only if the two nodes are similar,
+In this representation each arc of the graph will connect two nodes only if the two nodes are similar,
 the weights of the arcs are directly proportional to the similarity of the incident nodes.\\
 
 With respect to our classification task,each node in the graph corresponds to the feature vector of a comment.
@@ -198,10 +198,10 @@ $Y_{L}$:the soft labels for the labelled data\\
 This means that $Y_{L}$ is given at the beginning of the problem
 and the target is to find good values for $Y_{U}$.\\
 \\
-\textbf{Step 1 - Init}: In this step, the Labels for $Y_{L}$ are clamped, and the labels for $Y_{U}$ are randomly initialized.\\
+\textbf{Step 1 - Init}: In this step, the labels for $Y_{L}$ are clamped, and the labels for $Y_{U}$ are randomly initialized.\\
 The proof that the initialization values of $Y_{U}$ are not transcendental can be found at ~\cite{Zhu:2005:SLG:1104523}.\\
 \\
-\textbf{Step 2 - Propagation}: In this step, the Labels of neighbouring nodes are pushed.\\
+\textbf{Step 2 - Propagation}: In this step, the labels of neighbouring nodes are pushed.\\
 Let $t$ be the current iteration, then $Y^{t+1}$ is defined as:
 \begin{align}
 Y^{t+1} = T Y^{t}
@@ -235,10 +235,10 @@ The Auxiliary Tasks are trained on the unlabelled data,in consequence one constr
 \\
 In this paper's experiment, the target task corresponds to find the label of each comment.\\
 The auxiliary problems are defined as:\\
-Learning a linear predictor using the Unlabelled data for the $K$ most common words in the unlabelled data and a predictor for the words with highest Pointwise mutual information(PMI) from the Labelled Data.\\
+learning a linear predictor using the Unlabelled data for the $K$ most common words in the unlabelled data and a predictor for the words with highest Pointwise mutual information(PMI) from the labelled Data.\\
 By doing this both the features of the labelled data and unlabelled data will be extended, the labelled data will be extended with features from the unlabelled data, and the unlabelled data will be extended with predictive features of the labelled data.\\
 \\
-For learning this tasks, first the Words with highest PMI are found using the labelled data, then the words with highest frequency in the unlabelled data are found.\\
+For learning this tasks, first the words with highest PMI are found using the labelled data, then the words with highest frequency in the unlabelled data are found.\\
 Subsequently a linear classifier for predicting each of this words is trained using the unlabelled data.
 It is clear that labels for this tasks can be easily generated by masking the words for which the classifiers are being trained to predict.\\
 \\
@@ -265,13 +265,13 @@ Each of the experiments were ran with different amounts of training data, specif
 For the Label Propagation  $Junto$ \footnote{ \url{https://github.com/parthatalukdar/junto} } ~\cite{Talukdar:2010:EGS:1858681.1858830} was used. $Junto$ is an open source implementation of the Label Propagation algorithm.\\
 \\
 For $SL$ and $SVM$ the libsvm\footnote{\url{http://www.csie.ntu.edu.tw/~cjlin/libsvm/}} library provided an implementation for training SVM.\\
-For all the linear classifiers trained in the experiments a  polynomial Kernel was picked and the value of $gamma$ was 1.2, the reason behind this choice is motivated by the empirical results obtained by ~\cite{Joachims:1998:TCS:645326.649721} in a similar task.\\
+For all the linear classifiers trained in the experiments a  Polynomial Kernel was picked and the value of $gamma$ was 1.2, the reason behind this choice is motivated by the empirical results obtained by ~\cite{Joachims:1998:TCS:645326.649721} in a similar task.\\
 \\
 For making the tasks suitable for the given computational power, a subset of the size of $\frac{1}{4}$ of each of the given datasets was used, this has a major drawback, since the more the data the better the behaviour of the semi-supervised algorithms.
 Furthermore an upper bound on the number of auxiliary classifiers created by  the naive structure learning was imposed, the auxiliary problems would be 40\% of the most common words in the unlabelled data and the words with highest PMI from the Labelled data.\\
 A major drawback of Label Propagation from a running time perspective is having to calculate a complete graph containing the similarity among the nodes.Calculating a graph with 2 or more millions of arcs consume lots of resources.
 \section{Results}
-In overall the Naive SL could maintain the f-score given by the Supervised approach, in some cases was able to get a much better f-score by improving recall, in some other cases a slightly better recall resulted in a decline of the precision thus leading to a worse f-score.\\
+In overall the Naive SL could maintain the f-score given by the supervised approach, in some cases was able to get a much better f-score by improving recall, in some other cases a slightly better recall resulted in a decline of the precision thus leading to a worse f-score.\\
 \\
 The LP approach on the other hand raised in labels where both of the previous approaches failed such as with the label $Resistance$  in the sportswear dataset Figure~\ref{fig:nike_90_fscore} or $Brand$ $Support$ Figure~\ref{fig:nike_10_fscore},  $Tenderness$  in the Hygienic Product dataset Figure~\ref{fig:terra_30_fscore}, and many others like $Photography$,$Screen$ and $Social$ $Networks$ in the Mobilephone dataset Figure~\ref{fig:sony_30_fscore_more}.\\
 \\
@@ -299,7 +299,7 @@ Noisy data such as miss written words can lead to bad classifications or points 
 On the other hand in the short text classification, you got at most 144 characters per text, so you might end up only with a small subset of topic related words.
 For example lets assume you have a set of good predictors in your labelled data and those predictors are the words: ''Camera" and ''resolution".If there is a comment saying just: ''it has a good amount of megapixels", it will be very unlikely to be classified correctly, unless there is another comment linking ''megapixels" with one of the predicting words in the seed set.\\
 \\
-With respect to the Topic Vocabulary, I would speculate that this really affect the performance. In the Hygienic Product and  Sportswear the term's range are more or less reduced, this is not the case of the mobile phone dataset, the range of topic vocabulary for each label is huge, just take into account the label $Application$, a comment can be given this label if it has a mention to a well known IOS or Android App, such as ''Angry Birds", furthermore take into account the label $Social$ $Network$ where social networks' names are mentioned. On top of that combine all the possible technical words that might appear with the labels $Camera$, $OS$, $Photography$.
+With respect to the topic vocabulary, I would speculate that this really affect the performance. In the Hygienic Product and  Sportswear the term's range are more or less reduced, this is not the case of the mobile phone dataset, the range of topic vocabulary for each label is huge, just take into account the label $Application$, a comment can be given this label if it has a mention to a well known IOS or Android App, such as ''Angry Birds", furthermore take into account the label $Social$ $Network$ where social networks' names are mentioned. On top of that combine all the possible technical words that might appear with the labels $Camera$, $OS$, $Photography$.
 
 \end{itemize} 
 
