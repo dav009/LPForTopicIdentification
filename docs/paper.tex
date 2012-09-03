@@ -56,7 +56,7 @@ This Subtask can be modelled as a classification problem, given a set of fixed p
 \\
 In the Scenario of text classification Semi-supervised techniques present two advantages:\\
 First a semi-supervised method should allow to classify text by annotating only a small portion of data,thus reducing the labor of annotating.\\
-Second the unlabeled data is used during training, this is important since the amount of unlabeled data in these tasks is abundant and available, therefore it can be used to provide extra knowledge to the model.\\
+Second the unlabeled data is used during training, this is important since the amount of unlabelled data in these tasks is abundant and available, therefore it can be used to provide extra knowledge to the model.\\
 \\
 In ~\cite{Ando:2005:FLP:1046920.1194905} Zhang and Kubota proposed a semi-supervised approach using linear classifiers for multiple learning tasks.\\
 They proposed to create additional classifications tasks (Auxiliary Problems) aside from the Target Problem.\\
@@ -74,13 +74,13 @@ whereas tweets are at most 144 characters long.\\
 The new trends in these social networks have led to research about classification in short texts, the latter has  shown that it arises new challenges, and former approaches are not  effective.\\
 One of the reasons is that  user generated comments in the mentioned services tend to be extremely short, leading to sparce feature representations.\\
 \\
-In respect to short text classification ~\cite{Fan:2010:NMC:1916732.1917677} proposes  to do Feature Extension to deal with data sparcity, in his approach each comment is extended with extra words from an expansion vocabulary.\\
+In respect to short text classification Xinghua and Hongge ~\cite{Fan:2010:NMC:1916732.1917677} proposes  to do Feature Extension to deal with data sparcity, in their approach each comment is extended with extra words from an expansion vocabulary.\\
 ~\cite{Gabrilovich:2006:OBB:1597348.1597395} proposes on the other hand to use encyclopedic knowledge from wikipedia for extending the short comments.\\
 As opposed to the above ones,  ~\cite{Sun:2012:STC:2348283.2348511} reduces the word space of the comments to keywords and use information retrieval with a voting scheme to find labels for short comments.\\
 \\
 This paper describes the setup of an experiment for classifying short-text comments of product reviews extracted from twitter.\\
 Two semi-supervised techniques are used, Label Propagation ~\cite{Zhu:2005:SLG:1104523}  and  a variation of Structural learning problem for multitasks ~\cite{Ando:2005:FLP:1046920.1194905}.\\
-The next sections describe briefly each of the proposed methods and how they were adapted to the task, then the pre-processing involved. \\
+The next sections describe briefly  the preprocessing of the tweets,each of the proposed semi-supervised methods and how they were adapted to the task. \\
 Addionally the results are shown, where both methods are compared among themselves and to a supervised approach.
 Finally a short conclusion and future work are discussed.\\
 \\
@@ -94,9 +94,9 @@ mentioning latinamerican companies or products.\\
 The datasets are separated by product.\\
 There are 3 datasets in this experiment:
 \begin{itemize}
-	\item Sportwear dataset
+	\item Sportswear dataset
 	\item Mobile-Phone dataset
-	\item hygienic-product dataset
+	\item Hygienic-product dataset
 \end{itemize}
 
 Each dataset is composed of tuples,each tuple contains : the source of the opinion, the opinion, the polarity and the topic.\\
@@ -147,15 +147,15 @@ When it comes to pre-processing there could be wide number of possible
 tasks that can be done, I try to keep it simple given the time constraints. \\
 \\
 As a result of this pre-processing each comment is converted into a bag of keywords.\\
-This will be later transform into a vector space representation.
+This will be later transformed into a vector space representation.
 
 
-%% for future work mention that words like 'camera' that turn out to be good predictor, can be biased by the fact that is misswritten 'camera '  'cmarea'
+
 
 \section{Label Propagation}
 
 This Semi-supervised learning graph method was proposed by Zhu ~\cite{Zhu:2005:SLG:1104523}.\\
-The idea behind Label propagation is similar to K-Neighbors, nevertheless Label propagation make use of the unlabeled data during the training process.\\
+The idea behind Label propagation is similar to K-Neighbours, nevertheless Label propagation make use of the unlabelled data during the training process.\\
 
 This approach maps the data to a graph representation.
 In this representation each Arc of the graph will connect two nodes only if the two nodes are similar,
@@ -173,7 +173,7 @@ If a weight arc is high, the label will travel easier through the graph.\\
 \\
 The LP Algorithm iterates until convergence,
 at each step the algorithm will push the labels
-of the labeled data points through the arcs of high weights.The underlying assumption is that instances among a class will have high weighted arcs
+of the labelled data points through the arcs of high weights.The underlying assumption is that instances among a class will have high weighted arcs
 connecting them.\\
 At each iteration the labels of the labelled data are clamped.\\
 
@@ -214,7 +214,7 @@ Y^{t+1} = T Y^{t}
 The simplest approach would be to pick the label with the highest probability. \\
 In ~\cite{Zhu:2005:SLG:1104523} there is an empirical analysis on more sophisticated approaches, there it is shown how this criteria can affect the performance, nevertheless for this experiment the simple approach was used.\\
 \\
-More sophisticated versions of this approach have been presented and assessed, in ~\cite{Talukdar:2010:EGS:1858681.1858830} Talukdar and Pereira showed an empirical comparison among different variations of the LP algorithm, a modified absortion algorithm is presented where seed labels are not clamped,and it is shown to have better performance in the given tasks.
+More sophisticated versions of this approach have been presented and assessed, in ~\cite{Talukdar:2010:EGS:1858681.1858830} Talukdar and Pereira showed an empirical comparison among different variations of the LP algorithm, a modified absorption algorithm is presented where seed labels are not clamped,and it is shown to have better performance in the given tasks.
 Nevertheless within this paper we call LP to the algorithm proposed by Zhu ~\cite{Zhu:2005:SLG:1104523}.\\
 \\
 To summarize, in the experiment we convert our data into a complete graph,
@@ -230,25 +230,24 @@ A Semi-supervised learning method proposed in ~\cite{Ando:2005:FLP:1046920.11949
 This paper proposes a way to learn multiple classification tasks.In this approach the original Classification Task(Target Problem) is extended by creating a set of auxiliary classification tasks.\\
 The Auxiliary Classification tasks are used to improve performance on the target task,
 the underlying assumption is that by solving the auxiliary problems one should be able to find good predictive structures.\\
-The Auxiliary Tasks are trained on the unlabeled data,in consequence one constraint to the creation of auxiliary tasks is that they should be able to automatically generate training data from the target's problem unlabelled data.In ~\cite{Ando:2005:HSL:1219840.1219841} it is argued that having a high number of auxiliary tasks is beneficial for the performance.\\
+The Auxiliary Tasks are trained on the unlabelled data,in consequence one constraint to the creation of auxiliary tasks is that they should be able to automatically generate training data from the target's problem unlabelled data.In ~\cite{Ando:2005:HSL:1219840.1219841} it is argued that having a high number of auxiliary tasks is beneficial for the performance.\\
 \\
 In this paper's experiment, the target task corresponds to find the label of each comment.\\
 The auxiliary problems are defined as:\\
-Learn a linear predictor using the Unlabelled data for the $K$ most common words in the unlabeled data and a predictor for the words with highest Pointwise mutual information(PMI) from the Labelled Data.\\
+Learn a linear predictor using the Unlabelled data for the $K$ most common words in the unlabelled data and a predictor for the words with highest Pointwise mutual information(PMI) from the Labelled Data.\\
+By doing this both the features of the labelled data and unlabelled data will be extended, the labelled data will be extended with features from the unlabelled data, and the unlabelled data will be extended with predictive features of the labelled data.\\
 \\
 For learning this tasks, first the Words with highest PMI are found using the labelled data, then the words with highest frequency in the unlabelled data are found.\\
 Subsequently a linear classifier for predicting each of this words is trained using the unlabelled data.
-It is clear that labels for this tasks can be easily generated by masking the words for which the classifiers are being trained from the comments.\\
+It is clear that labels for this tasks can be easily generated by masking the words for which the classifiers are being trained to predict.\\
 \\
-By solving the auxiliary tasks, the feauture vectors of the training data for the target problem can be extended with the predictions of the auxiliary tasks.\\
-This might shown useful in the setup of the experiment, since we are extending the feauture representations from knowledge of unlabelled data.\\
+By solving the auxiliary tasks, the feature vectors of the training data for the target problem can be extended with the predictions of the auxiliary tasks.\\
+This might shown useful in the setup of the experiment, since we are extending the feature representations from knowledge of unlabelled data.\\
 \\
 Finally a linear classifier is learnt using the training data for the target problem.\\
 With respect to the ASO-SVD algorithm, this paper just explore a naive approach by using auxiliary problems, in this regard the auxiliary classifiers are used to extend the feature vectors.\\
 For the rest of the paper we will refer to this approach as Naive SL.
 
-
-\section{Feature Generation}
 
 \section{Experiment}
 For the experiments, the three datasets mentioned above were used as training and test data.\\
@@ -262,44 +261,65 @@ The experiments corresponds to the following:
 
 Each of the experiments were ran with different amounts of training data, specifically 10\%, 30\%, 60\% and 90\%\\
 \\
-For the Label Propagation  $Junto$ \footnote{ \url{https://github.com/parthatalukdar/junto} } ~\cite{Talukdar:2010:EGS:1858681.1858830} was used. $Junto$ is an open source implementation of the Label Propagation algorithm proposed by Zhu.\\
+For the Label Propagation  $Junto$ \footnote{ \url{https://github.com/parthatalukdar/junto} } ~\cite{Talukdar:2010:EGS:1858681.1858830} was used. $Junto$ is an open source implementation of the Label Propagation algorithm.\\
 \\
 For $SL$ and $SVM$ the libsvm\footnote{\url{http://www.csie.ntu.edu.tw/~cjlin/libsvm/}} library provided an implementation for training SVM.\\
 For all the linear classifiers trained in the experiments a  polynomial Kernel was picked and the value of $gamma$ was 1.2, the reason behind this choice is motivated by the empirical results obtained by ~\cite{Joachims:1998:TCS:645326.649721} in a similar task.\\
 \\
-For making the tasks suitable for the given computational power, a subset of the size of $\frac{1}{4}$ of each of the given datasets was used, this has a major drawback, since the more the data the better the behavior of the semi-supervised algorithms.
-Also an upper bound on the number of auxiliary classifiers created by  the naive structure learning was imposed, the auxiliary problems would be 40\% of the most common words in the unlabeled data and the words with highest PMI from the Labelled data.\\
+For making the tasks suitable for the given computational power, a subset of the size of $\frac{1}{4}$ of each of the given datasets was used, this has a major drawback, since the more the data the better the behaviour of the semi-supervised algorithms.
+Furthermore an upper bound on the number of auxiliary classifiers created by  the naive structure learning was imposed, the auxiliary problems would be 40\% of the most common words in the unlabelled data and the words with highest PMI from the Labelled data.\\
 A major drawback of Label Propagation from a running time perspective is having to calculate a complete graph containing the similarity among the nodes.Calculating a graph with 2 or more millions of arcs consume lots of resources.
 \section{Results}
-In the following subsections, the results for each dataset are described.\\
-\\
 In overall the Naive SL could maintain the f-score given by the Supervised approach, in some cases was able to get a much better f-score by improving recall, in some other cases a slightly better recall resulted in a decline of the precision thus leading to a worse f-score.\\
 \\
-The LP approach on the other hand raised in labels where both of the previous approaches failed such as with the label $Resistance$  in the sportwear dataset Figure~\ref{fig:nike_90_fscore} or $Brand$ $Support$ Figure~\ref{fig:nike_10_fscore},  $Tenderness$  in the Hygienic Product dataset Figure~\ref{fig:terra_30_fscore}, and many others like $Photography$,$Screen$ and $Social$ $Networks$ in the Mobilephone dataset Figure~\ref{fig:sony_30_fscore_more}.\\
+The LP approach on the other hand raised in labels where both of the previous approaches failed such as with the label $Resistance$  in the sportswear dataset Figure~\ref{fig:nike_90_fscore} or $Brand$ $Support$ Figure~\ref{fig:nike_10_fscore},  $Tenderness$  in the Hygienic Product dataset Figure~\ref{fig:terra_30_fscore}, and many others like $Photography$,$Screen$ and $Social$ $Networks$ in the Mobilephone dataset Figure~\ref{fig:sony_30_fscore_more}.\\
 \\
-The Hygienic Product and Sportwear datasets give some decent results, whereas the Mobile Phone dataset shown to be more challenging.\\
+The Hygienic Product and Sportswear datasets shown some decent results, whereas the Mobile Phone dataset shown to be challenging.\\
 \\
-One factor that might have affected the overall performance was using a subset of the data, this specially seems to affect LP.LP profits from abundant unnanotated data, my hypothesis is that using a very small set of seeds with a large number of unnanotated data should improve the scores given below.\\
-The reason for LP giving such low scores  on some of the tasks might be : first because of the limited number of data, there are some disconnected segments of the graph, therefore a proper propagation cannot be carried out successfully for prediction.\\
-Second the feature vectors are very sparce, leading to the problem mentioned above.\\
-In an attempt to discover whether both more data and selecting more features would benefit the approach  a second test was carried out in the Mobile Phone dataset. In this attempt more data were taken into account and a larger number of features were allowed to be part of the feature vectors, the results are given in Figure~\ref{fig:sony_10_fscore_more} and Figure~\ref{fig:sony_30_fscore_more}, in general it can be said that there is much a better f-score for a larger number of labels, so It is possible to speculate that using the whole datasets would double the f-scores given in this report.\\
+One factor that might have affected the overall performance was using a subset of the data, this specially seems to affect LP.\\
+LP profits from abundant unannotated data, my hypothesis is that using a very small set of seeds with a large number of unannotated data should improve the scores given below.\\
+The reason for LP giving such low scores  on some of the tasks might be caused by the limitation on the dataset sizes and the data sparsity in the feature vectors.\\
+\\
+First the Limitation on the size of the datasets might have caused a lack of extra samples, thus  generating some disconnected segments of the graph in case of LP, therefore a proper propagation cannot be carried out successfully for prediction.\\
+\\
+Second the feature vectors are very sparse, because of the bag of keywords approach and the short text nature of the task, thus leading also to disconnected segments of the graph.\\
+\\
+A second test was carried out in an attempt to discover whether both more data and selecting more features would benefit the approach, this second test was done on the Mobile Phone dataset.\\
+In this trial more data were taken into account and a larger number of features were allowed to be part of the feature vectors,this would also benefit SL since the number of auxiliary problems would be incremented.
+The results are given in Figure~\ref{fig:sony_10_fscore_more} and Figure~\ref{fig:sony_30_fscore_more}, in general it can be said that there is much a better f-score for a larger number of labels when compared to the previous tests, so It is possible to speculate that using the whole datasets would greatly increase the f-scores given in this report.\\
 \\
 
-Since comments are reduced to a bag of keywords there other factors which could have caused the given results  are:
+Since comments are reduced to a bag of keywords other factors which could have caused the given results are:
 \begin{itemize}
-\item Noise,the given data is actual user-generated content thus very noisy.\\
-Noisy data such as miss written words can lead to bad classifications or points isolated in the LP graph. Take as an example the label $Camera$ for the Mobile phone dataset, if a good predictor for this label is the actual word ''camera" ,and it is seen in the labelled data, variations such as ''camraa" and others might not result predictive.
+\item \textbf{Noise}:the given data is actual user-generated content thus very noisy.\\
+Noisy data such as miss written words can lead to bad classifications or points isolated in the LP graph. Take as an example the label $Camera$ for the Mobile phone dataset, if a good predictor for this label is the actual word ''camera" and this word has been seen in the labelled data, seeing variations such as ''camraa" might not result predictive, since they would be in a different dimension.
 
-\item Sparsity and Short Text, feature vectors are very sparce and text is short. This could affect in the following ways, lets think again on the label $Camera$ for the Mobile  phone dataset, if we assume we are classifying long texts, an annotated instance can reveal a lot of the topic vocabulary , in this case words such as ''resolution", ''megapixels" and so on.\\
-On the other hand in the short text classification, you got at most 144 characters per text, so you might end up only with a small subset of topic related words. For example, lets assume you have a good predictor in your seed set which is the word ''Camera" and ''resolution". If there is a message saying just: ''it has a good amount of megapixels", it will be very unlike to be classified correctly, unless there is another entry linking ''megapixels" with one of the predicting words in the seed set.\\
+\item \textbf{Sparsity and Short Text}: feature vectors are very sparse and text is short. This could affect in the following ways, lets think again on the label $Camera$ for the Mobile  phone dataset, if we assume we are classifying long texts, an annotated instance can reveal a lot of the topic vocabulary , in this case words such as ''resolution", ''megapixels" and so on.\\
+On the other hand in the short text classification, you got at most 144 characters per text, so you might end up only with a small subset of topic related words.
+For example lets assume you have a set of good predictors in your labelled data and those predictors are the words: ''Camera" and ''resolution".If there is a comment saying just: ''it has a good amount of megapixels", it will be very unlikely to be classified correctly, unless there is another comment linking ''megapixels" with one of the predicting words in the seed set.\\
 \\
-With respect to the Topic Vocabulary, I would speculate that this really affect the performance. In the Hygenic Product and  Sportwear the terms range are more or less reduced, this is not the case of the mobile phone dataset, the range of topic vocabulary for each label is huge, just take into account the label $Application$, a comment can be given this label if it has a mention to a well known IOS or Android App, such as ''Angry Birds", furthermore take into account the label $Social$ $Network$ where social networks' names are mentioned, on top of that combine all the possible technical words that might appear with the labels $Camera$, $OS$, $Photography$.
+With respect to the Topic Vocabulary, I would speculate that this really affect the performance. In the Hygienic Product and  Sportswear the term's range are more or less reduced, this is not the case of the mobile phone dataset, the range of topic vocabulary for each label is huge, just take into account the label $Application$, a comment can be given this label if it has a mention to a well known IOS or Android App, such as ''Angry Birds", furthermore take into account the label $Social$ $Network$ where social networks' names are mentioned. On top of that combine all the possible technical words that might appear with the labels $Camera$, $OS$, $Photography$.
 
 \end{itemize} 
 
 
 
-\section{Future Work}
+\section{Conclusions and Future Work}
+An experiment on classifying short comments about products was described, two semi-supervised approaches were presented and compared for solving this problem.\\
+\\
+Data sparsity and the length of the texts shown to be an issue in this task for Label Propagation.
+One idea for tackling this problem would be to try injecting some knowledge related to the labels, this could be useful in the difficult tasks such as the Mobile Phone dataset.An approach similar to the one given by ~\cite{Gabrilovich:2006:OBB:1597348.1597395} could be tried.Basically Wikipedia could be used to gather Topic vocabulary and use that vocabulary to extend each of the comments, this could solve disconnected segments in the graph.\\
+\\
+Another idea worth trying is to use the SL for multitask classification instead of tackling each dataset by separate, one could try joining them and solving them as a single classification problem, this however requires more computational power but should allow better results.\\
+\\
+In spite of noise being a problem, I would speculate that given enough data the problem of noisy entries such as miss-spelled words should not be a big issue, this assuming there is enough noisy data in both the labelled and unlabelled entries.\\
+\\
+It would be also interesting to try the other Label Propagation Variations such as Modified Adsorption (MAD) discussed in ~\cite{Talukdar:2010:EGS:1858681.1858830}, these implementations are available in Junto.\\
+MAD should help when dealing with noisy input labels, which was one of the case between $Photography$ and $Camera$ in the Mobile Phone dataset.\\
+\\
+Additionally considering joining the naive SL given here with LP should help the latter to get better scores, this by allowing to connect some of the isolated sub-graphs generated by the feature sparsity.
+
+
 %other LP variations ( MAD for noisy ..)
 %multitask
 %more feautures for running
