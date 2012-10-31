@@ -1,6 +1,9 @@
-For details refer to report.pdf
+Label Propagation for Topic Mining
+============
 
-Abstract:
+For details refer to <i>report.pdf</i><br>
+<br>
+<b>Abstract:</b> <br>
 Microblogging has become a trend,thus many users
 are using such platforms to share their opin-
 ions.Mining these opinions can reveal valuable in-
@@ -11,7 +14,7 @@ ing tweets, first their length do not provide enough
 word occurrences so traditional bag-of-words meth-
 ods have limitations, second they are extremely
 noisy and third annotated data is limited and costly
-to get.
+to get.<br>
 In this paper we address the problem of classify-
 ing short product reviews by using semisupervised
 learning. A comparison among two semisupervised
